@@ -1,0 +1,46 @@
+#Dobre Adriana Lia, Guțu Ștefania Alexandra, Pirlogea Luciana Elena, grupa 141
+states:
+    q1
+    q2
+    qaccept
+    qreject
+End
+sigma:
+    0
+    1
+    #
+End
+gamma:
+    0
+    1
+    #
+    s
+End
+# Sintaxa tranzitii:
+# starea_curenta, starea_urmatoare, simbolul_spre_care_arata_primul_capat/simbolul_spre_care_arata_al_doilea_capat[, simbolul_pe_care_il_scrie_pe_banda_primul_capat/simbolul_pe_care_il_scrie_pe_banda_al_doilea_capat], directia_unde_ne_mutam_cu_primul_capat/directia_unde_ne_mutam_cu_al_doilea_capat
+# N - capatul sta pe loc
+# L - capatul se muta la stanga
+# R - capatul se muta la dreapta
+transitions:
+    q1,q1,0/0,N/R
+    q1,q1,1/1,N/R
+    q1,q1,0/1,N/R
+    q1,q1,1/0,N/R
+    q1,qreject,#/#,N/N
+    q1,q2,0/#,N/R
+    q1,q2,1/#,N/R
+    q2,q2,0/0,R/R
+    q2,q2,1/1,R/R
+    q2,qreject,0/1,N/N
+    q2,qreject,1/0,N/N
+    q2,qreject,#/0,N/N
+    q2,qreject,#/1,N/N
+    q2,qaccept,0/s,N/N
+    q2,qaccept,1/s,N/N
+    q2,qaccept,#/s,N/N
+End
+special_states:
+    q1
+    qaccept
+    qreject
+End
