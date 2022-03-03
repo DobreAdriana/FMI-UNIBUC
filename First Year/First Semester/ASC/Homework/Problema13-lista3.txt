@@ -1,0 +1,63 @@
+#Functie MIPS ce implementeaza functia C "strlen" (cu retur prin $v0):
+#    size_t strlen(const char *s);
+#care returneaza lungimea stringului pointat de "s", fara a numara
+#terminatorul nul (putem considera "s" adresa obisnuita iar valoarea
+#returnata int). Program ilustrativ.
+
+.data
+    s:.asciiz "cuvant"
+.text
+strlen:
+    subu $sp, 4
+    sw $fp, 0($sp)
+
+    addi $fp, $sp, 4
+
+    subu $sp, 4
+    sw $ra, 0($sp)
+
+    subu $sp, 4
+    sw $s0, 0($sp)
+  
+    subu $sp, 4
+    sw $s1, 0($sp)
+
+    lw $s0, 0($fp)
+    
+    lb $s1 ,s($v0)
+
+    beqz $s1, exit
+
+    addi $v0, 1
+
+    subu $sp, 4
+    sw $s0, 0($sp)
+
+    jal strlen
+    addu $sp, 4
+
+exit:
+    lw $s1, -16($fp)
+    lw $s0, -12($fp)
+    lw $ra, -8($fp)
+    lw $fp, -4($fp)
+
+    addu $sp, 16
+
+    jr $ra
+
+main:
+    la $t0, s        
+    subu $sp, 4       
+    sw $t0, 0($sp) 
+
+    jal strlen
+
+    addu $sp, 4
+
+    move $a0, $v0
+    li $v0, 1
+    syscall
+
+    li $v0, 10
+    syscall

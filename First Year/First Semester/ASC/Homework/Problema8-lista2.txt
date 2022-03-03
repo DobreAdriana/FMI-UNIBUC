@@ -1,0 +1,135 @@
+# Citire/afisare interactiva a unei matrici.
+
+.data
+    v:.space 400
+    n:.space 4
+    m:.space 4
+    citire1:.asciiz "dati matricea:"
+    citire2:.asciiz "n="
+    citire3:.asciiz "m="
+    c1:.asciiz "v["
+    c2:.asciiz "]["
+    c3:.asciiz "]="
+    afisare:.asciiz "am citit matricea:"
+    sp:.asciiz " "
+    nou:.asciiz "\n"
+.text
+main:
+    la $a0,citire1
+    li $v0, 4
+    syscall
+   
+    la $a0, nou
+    li $v0, 4
+    syscall #trece la rand nou
+
+    la $a0,citire2
+    li $v0, 4
+    syscall
+
+    li $v0, 5
+    syscall
+    move $t0, $v0 #citeste n
+    
+    la $a0,citire3
+    li $v0, 4
+    syscall
+  
+    li $v0, 5
+    syscall
+    move $t1, $v0 #citeste m
+
+    sw $t0, n # încarc in $t0 nr linii
+    sw $t1, m # încarc in $t1 nr coloane
+    li $t2, 0 # counter pt linia curenta
+    li $t4, 0 #pt memorie
+
+    linie:
+         beq $t2, $t0, af
+         li $t3, 0 # coloana curenta
+         coloana:
+             beq $t3, $t1, linie2
+
+             la $a0,c1
+             li $v0, 4
+             syscall #scrie v[
+   
+             move $a0, $t2
+             li $v0, 1
+             syscall #scrie linia curenta
+
+             la $a0,c2
+             li $v0, 4
+             syscall #scrie ][
+
+             move $a0, $t3
+             li $v0, 1
+             syscall #scrie coloana curenta
+
+             la $a0, c3
+             li $v0, 4
+             syscall #scrie ]=
+
+             move $t4, $t2 #calculează poziția în matrice
+             mul $t4, $t4, $t1
+             add $t4, $t4, $t3
+            
+             add $t4, $t4, $t4 #înmulțim $t4 cu 4 pentru a fi poziție validă
+             add $t4, $t4, $t4 #în tabloul nostru
+ 
+             li $v0, 5
+             syscall
+             sw $v0, v($t4) #citeste element
+
+             addi $t3, $t3, 1 #adauga 1 la coloana curenta
+
+             j coloana
+linie2:
+        addi $t2, $t2, 1 #adauga 1 la linia curenta
+        j linie
+af:
+   la $a0,afisare
+   li $v0, 4
+   syscall
+
+   la $a0, nou
+   li $v0, 4
+   syscall #trece la rand nou
+   
+   li $t2, 0 # counter pt linia curenta
+   li $t4, 0 #pt memorie
+   print:
+         beq $t2, $t0, exit
+         li $t3, 0 # coloana curenta
+         print_linie:
+             beq $t3, $t1, end_line
+
+             move $t4, $t2
+             mul $t4, $t4, $t1
+             add $t4, $t4, $t3
+            
+             add $t4, $t4, $t4
+             add $t4, $t4, $t4
+ 
+             lw $a0, v($t4)            # încarc valoarea din tablou în registrul $a0
+             li $v0, 1                 # pentru a o afișa pe ecran
+             syscall
+
+             la $a0, sp
+             li $v0, 4
+             syscall
+
+             addi $t3, $t3, 1 #adauga 1 la coloana curenta
+
+             j print_linie
+     end_line:
+         la $a0, nou
+         li $v0, 4
+         syscall #trece la rand nou
+       
+         addi $t2, $t2, 1 #adauga 1 la linia curenta
+     
+         j print
+exit:
+    li $v0, 10
+    syscall
