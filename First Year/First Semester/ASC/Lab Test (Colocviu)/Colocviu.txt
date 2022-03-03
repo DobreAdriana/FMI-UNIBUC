@@ -1,0 +1,124 @@
+#Problema 13-Dobre Adriana Lia-grupa 141
+#Procedura ce primeste ca parametri prin stiva adresa unui vector de 
+#intregi, lungimea sa (intreg) si adresele a doua variabile intregi x,y si
+#atribuie lui x suma componentelor mai mari ca 5, iar lui y suma componentelor
+#mai mici sau egale cu 5; daca vreunul din aceste tipuri de componente nu
+#exista (de ex. nu exista componente <= 5) suma respectiva va fi 0.
+#Procedura isi va accesa parametrii cu $fp iar apelurile vor respecta
+#conventiile MIPS si C (privind cadrul de apel, $fp, registrii salvati de
+#apelant si apelat, etc.).
+#Program care aplica procedura cu niste parametri fixati si afisaza
+#(cu "syscall") mesajul "egale" sau "diferite" dupa cum numerele plasate in
+#cele doua variabile sunt egale, respectiv diferite.
+
+.data
+v: .word 1, 1, 1, 1, 1, 1
+n: .word 6
+x: .word 0
+y: .word 0
+mesaj1: .asciiz "diferite"
+mesaj2: .asciiz "egale"
+
+.text
+
+suma:
+
+    subu $sp, 4
+    sw $fp, 0($sp)
+
+    addi $fp, $sp, 4
+ 
+    subu $sp, 4 
+    sw $s0, 0($sp)
+  
+    subu $sp, 4
+    sw $s1, 0($sp)
+
+    subu $sp, 4
+    sw $s2, 0($sp)
+
+    subu $sp, 4
+    sw $s3, 0($sp)
+
+    lw $s0, 0($fp) #y
+
+    lw $s1, 4($fp) #x
+
+    lw $s2, 8($fp) #adresa de memorie
+  
+    lw $s3, 12($fp) #lungimea vectorului
+    
+    li $t0, 0 #counter
+    li $t1, 5
+ 
+    loop:
+     
+       beq $t0, $s3, exit1
+       
+       lw $s4, 0($s2)
+   
+       bgt $s4, $t1, emaimare
+ 
+       add $s0, $s0, $s4
+
+       addu $s2, 4
+  
+       addu $t0, 1
+
+       emaimare:
+            add $s1, $s1, $s4
+       j loop
+exit1:
+     subu $s0, $s0, $s1
+     move $t0, $s0
+     move $t1, $s1
+
+     sw $s1, 0($fp)
+     sw $s0, 0($fp)
+     lw $s0, -24($fp)
+     lw $s1, -20($fp)
+     lw $s2, -16($fp)
+     lw $s3, -12($fp)
+     lw $s4, -8($fp)
+     lw $fp, -4($fp)
+   
+     addu $sp, 24
+  
+     j $ra
+     
+main:
+    lw $t0, n #pun pe stiva lungimea vectorului
+    subu $sp, 4
+    sw $t0, 0($sp)
+
+    la $t0, v #pun pe stiva adresa de memorie de un incepe vectorul
+    subu $sp, 4
+    sw $t0, 0($sp)
+
+    lw $t0, x #pun pe stiva x
+    subu $sp, 4
+    sw $t0, 0($sp)
+    
+    lw $t0, y  #pun pe stiva y
+    subu $sp, 4
+    sw $t0, 0($sp)
+
+    jal suma
+
+    addu $sp, 16
+
+    beq $t1, $t0, egale
+    la $a0, mesaj1
+    j exit
+
+    egale:
+        la $a0, mesaj2
+exit:
+    li $v0, 4
+    syscall
+    li $v0, 10
+    syscall
+
+
+
+    
