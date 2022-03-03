@@ -1,6 +1,6 @@
 # Formal And Automatic Languages
 
-## Tech Used :
+### Tech Used :
 - Python
 
 Project And Laboratory Team With @StefaniaGutu and @LucianaPirlogea
