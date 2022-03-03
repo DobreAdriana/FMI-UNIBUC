@@ -1,0 +1,24 @@
+#
+#
+#
+Sigma:
+        a
+        b
+End
+#
+#
+States:
+    1,s,f
+    2
+    3
+End
+#
+## Comments
+#
+Transitions:
+         1,b,2
+         2,a,2
+         2,a,3
+         2,b,3
+         3,a,1
+End
