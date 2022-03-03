@@ -1,0 +1,177 @@
+--11. Formulați în limbaj natural și implementați 5 cereri SQL complexe ce vor utiliza, în ansamblul lor, următoarele elemente: 
+--• operație join pe cel puțin 4 tabele
+--• filtrare la nivel de linii
+--• subcereri sincronizate în care intervin cel puțin 3 tabele
+--• subcereri nesincronizate în care intervin cel puțin 3 tabele
+--• grupări de date, funcții grup, filtrare la nivel de grupuri
+--• ordonări
+--• utilizarea a cel puțin 2 funcții pe șiruri de caractere, 2 funcții pe date calendaristice, a 
+--funcțiilor NVL și DECODE, a cel puțin unei expresii CASE
+--• utilizarea a cel puțin 1 bloc de cerere (clauza WITH)
+
+---operație join pe cel puțin 4 tabele
+---Sa se afiseze in ordine crescatoare toate detaliile (camera, destinatie,hotel) despre ofertele care incep din luna iulie obtinute de angajatul cu id-ul 60. 
+
+select o.id_angajat, o.id_oferta, tip_oferta, pret, nume_hotel,cam.id_camera, nr_camera,etaj, capacitate, data_start, data_end,oras, tara, continent
+from obtine o join oferta ofe on (o.id_oferta = ofe.id_oferta)
+     join camera cam on (cam.id_camera=o.id_camera)
+     join destinatie d on (d.id_destinatie = ofe.id_destinatie)
+     join hotel h on (h.id_hotel=cam.id_hotel)
+where o.id_angajat=60 and TO_CHAR(data_start, 'mm')= 07
+order by data_start;
+
+--Sa se afiseze oferta si numarul sau de camere fara facilitati si al carui hotel incepe cu litera 'A'.
+select o.id_oferta, tip_oferta, pret, nr_cam, ob.id_camera
+from obtine ob, oferta o, camera c, hotel h,( select id_camera,count(id_camera) nr_cam
+                           from obtine
+                           where id_camera not in (select id_camera
+                                               from contine_fac
+                                               )            
+                           group by id_camera
+                           ) cam
+where ob.id_oferta=o.id_oferta and ob.id_camera=cam.id_camera
+      and c.id_camera=ob.id_camera and  c.id_hotel=h.id_hotel
+      and upper(nume_hotel) LIKE ('A%');
+
+---Sa se afiseze noul salariu al agentilor si contabililor stiind ca cei cu experienta de peste 10 ani in agentie vor avea o marire de salariu de 10%.
+select ang.id_angajat,nume, prenume,salariu,data_angajarii,decode(tip_angajat, 'Contabil', salariu*1.1, null) "nou salariu contabil",
+                               case tip_angajat when 'Agent de vanzare' then salariu*1.1 else null end "nou salariu agent"
+from angajat ang join contract_angajat c on (c.id_angajat=ang.id_angajat)
+where round((sysdate-data_angajarii)/360)>10;
+
+---Să se scrie o cerere care afişează ofertele cu transportul avand sediul la Bucuresti a caror valoare totala de castig este mai mare
+---decat media castigului total al tuturor ofertelor.
+ WITH val_oferta AS (SELECT o.id_oferta, SUM(pret) AS total
+                 FROM oferta o join obtine ob ON (o.id_oferta = ob.id_oferta)
+                 GROUP BY o.id_oferta
+                 HAVING o.id_oferta in ( select ofer.id_oferta
+                                         from oferta ofer join transport t on (ofer.id_transport=t.id_transport)
+                                         where t.id_firma = ( select id_firma
+                                                                  from firma
+                                                                  where t.id_firma=id_firma and initcap(sediu)='Bucuresti'))
+                                         
+                                      
+ ),
+ val_medie AS (SELECT SUM(total)/COUNT(total) AS medie
+ FROM val_oferta)
+ SELECT *
+ FROM val_oferta
+ WHERE total > (SELECT medie
+                FROM val_medie);
+
+--Sa se afiseze oferta, pretul si numarul de clienti care au cumparat oferta respectiva in anul 2020, iar orasul in care se 
+---desfasoara oferta sa aiba a doua litera 'a'.
+select o.id_oferta, tip_oferta, pret, NVL(nr_cl,0)
+from obtine ob, oferta o,destinatie d,( select id_oferta, count(id_client) nr_cl
+                           from obtine
+                           group by id_oferta
+                           ) cl
+where ob.id_oferta=o.id_oferta and ob.id_oferta=cl.id_oferta and d.id_destinatie=o.id_destinatie
+      and TO_CHAR(data_start, 'yyyy')= 2020
+      and lower(oras) LIKE ('_a%');
+
+
+--12. Implementarea a 3 operații de actualizare sau suprimare a datelor utilizând subcereri.
+
+--Sa se mareasca cu o ora durata maxima de intarziere a ofertelor cu destinatia Constanta.
+
+update transport
+set durata_max=durata_max+1
+where id_transport in (select id_transport
+                       from oferta o join destinatie d on (o.id_destinatie=d.id_destinatie)
+                       where initcap(oras)='Constanta');
+
+--Sa se actualizeze pretul suplimentar la valoare de 20 pentru facilitatile pentru camerele de la etajul 1.
+update contine_fac
+set pret_suplimentar=20
+where id_camera in (select id_camera
+                    from camera
+                    where etaj=1);
+
+--Sa se stearga angajatii fara experienta.
+--Pentru a putea face acest lucru trebuie sa stergem intai contractele angajatilor fara experienta.
+
+delete 
+from contract_angajat
+where experienta is null;
+
+delete 
+from angajat
+where id_angajat not in (select id_angajat
+                  from contract_angajat);
+
+
+--13. Crearea unei secvențe ce va fi utilizată în inserarea înregistrărilor în tabele (punctul 10).2
+--cerinta 13 a fost implementata la punctul 10 la inserare.
+
+--16. Formulați în limbaj natural și implementați în SQL: o cerere ce utilizează operația outer join pe minimum 4 tabele și două cereri ce utilizează operația division.
+
+--Sa se afiseze toate ofertele obtinute de angajatul cu id-ul 60 in anul 2020. Se vor include si cele fara transport.
+
+
+select o.id_oferta, o.id_transport,data_start,cam.id_camera
+from oferta o left outer join transport t on (o.id_transport=t.id_transport)
+      right outer join obtine ob on (ob.id_oferta=o.id_oferta)
+      left outer join camera cam on (cam.id_camera=ob.id_camera)
+where ob.id_angajat=60 and TO_CHAR(data_start, 'yyyy')= 2020;
+
+--Sa se afiseze clientul care a stat numai in camera cu numarul 203.
+select id_client
+from obtine
+where id_camera in (select id_camera
+                        from camera
+                        where id_camera=203
+                        )
+MINUS
+select id_client
+from obtine
+where id_camera not in (select id_camera
+                        from camera
+                        where id_camera=203
+                        );
+
+
+                    
+--Sa se afiseze camerele care au numai facilitatea 5.
+
+select id_camera
+from contine_fac
+where id_facilitate in (select id_facilitate
+                        from facilitati
+                        where id_facilitate=5
+                        )
+MINUS
+select id_camera
+from contine_fac
+where id_facilitate not in (select id_facilitate
+                        from facilitati
+                        where id_facilitate=5
+                        );
+
+--17. Optimizarea unei cereri, aplicând regulile de optimizare ce derivă din proprietățile 
+--operatorilor algebrei relaționale. Cererea va fi exprimată prin expresie algebrică, arbore 
+--algebric și limbaj (SQL), atât anterior cât și ulterior optimizării.
+Să se afișeze id-ul ofertelor și valoarea acestora care au ca mijloc de transport avionul și care încep de la data de 1 martie 2020 , iar camera inclusă în oferte se află la un etaj mai mare decat 2.
+Cerere SQL:
+select o.id_oferta, pret
+from oferta o join transport t on (o.id_transport=t.id_transport)
+     join obtine ob on (ob.id_oferta=o.id_oferta)
+     join camera cam on (cam.id_camera=ob.id_camera)
+where mijloc_de_transport='avion' and to_char(data_start,'dd-mm-yyyy')>'01-03-2020'
+       and etaj>2;
+
+Expresie algebrică:
+R1=PROJECT(OFERTA,id_oferta,pret)
+R2=SELECT(TRANSPORT,mijloc_de_transport=’avion’)
+R3=PROJECT(R2,id_transport)
+R4=SEMIJOIN(R1,R3)
+R5=SELECT(OBTINE,data_start>’01-03-2020’)
+R6=PROJECT(R5,id_oferta,id_camera)
+R7=JOIN(R4,R7)
+R8=SELECT(CAMERA,etaj>2)
+R9=PROJECT(R8,id_camera)
+R10=JOIN(R7,R9)
+Rezultat=R11=PROJECT(R10,id_oferta,id_pret)
+
+--18. a. Realizarea normalizării BCNF, FN4, FN5.
+--b. Aplicarea denormalizării, justificând necesitatea acesteia.
