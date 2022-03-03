@@ -1,0 +1,17 @@
+Sigma: 
+	0
+	1
+End 
+States: 
+	q1,s
+	q12
+	q123,f
+End 
+Transitions: 
+	q1,0,q12
+	q1,1,q1
+	q12,0,q123
+	q12,1,q1
+	q123,0,q123
+	q123,1,q1
+End 

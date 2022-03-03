@@ -1,0 +1,24 @@
+# NFA
+# The language {w| w ends with 00} with three states
+#
+Sigma:
+        0
+        1
+End
+#
+#
+#
+States:
+        q1,s
+        q2
+        q3,f
+End
+#
+#
+#
+Transitions:
+         q1,0,q1
+         q1,0,q2
+         q1,1,q1
+         q2,0,q3
+End
