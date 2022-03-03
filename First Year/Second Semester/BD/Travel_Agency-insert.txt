@@ -1,0 +1,501 @@
+create table ANGAJAT
+( id_angajat number(5) constraint pk_ang primary key,
+  nume varchar2(20) not null,
+  prenume varchar2(20) not null,
+  adresa varchar2(20) not null,
+  telefon varchar2(20) not null,
+  tip_angajat varchar2(20) not null,
+  functie varchar2(40),
+  limba_vorbita varchar2(20),
+  comision number(10)
+  );
+
+alter table ANGAJAT
+add constraint tel_unic unique(telefon);
+
+alter table ANGAJAT
+add constraint nume_prenume_unic unique(nume, prenume);
+
+CREATE SEQUENCE SEQ_ANG
+INCREMENT by 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+  
+insert into ANGAJAT 
+values (10 , 'Popescu', 'Ion', 'Strada Bucuriei', '0745678192', 'Contabil', 'inregistreaza tranzactii', NULL, NULL);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Costache', 'Ioana', 'Strada Aviatiei', '0731278142', 'Ghid turistic', NULL , 'engleza' , NULL);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Bucur', 'Alexandru', 'Strada Soarelui', '0749078122', 'Agent de vanzare', NULL, NULL, 5);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Marinescu', 'Catalina', 'Strada Victoriei', '0721908192', 'Contabil', 'verifica tranzactii', NULL, NULL);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Tudorache', 'Marian', 'Strada Romana', '0731182812', 'Ghid turistic', NULL , 'franceza' , NULL);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Sandu', 'Maria', 'Strada Ciresului', '0749197132', 'Agent de vanzare', NULL, NULL, 4);
+
+insert into ANGAJAT 
+values (70, 'Radu', 'Alexandru', 'Strada Libertatii', '0749017132', 'Agent de vanzare', NULL, NULL, 2);
+
+insert into ANGAJAT 
+values (80, 'Enache', 'Andrei', 'Strada Independentei', '0739022132', 'Agent de vanzare', NULL, NULL, 1);
+
+insert into ANGAJAT 
+values (90, 'Enache', 'Alexandra', 'Strada Ion Creanga', '0746617138', 'Agent de vanzare', NULL, NULL, 3);
+
+select *
+from angajat;
+
+commit;
+
+create table CONTRACT_ANGAJAT
+( id_contract number(5) constraint pk_contract primary key,
+  id_angajat number(5) not null constraint fkey_ang references ANGAJAT(id_angajat),
+  data_angajarii date default sysdate ,
+  experienta number(3),
+  salariu number(10) not null,
+  constraint ang unique(id_angajat)
+  );
+
+insert into CONTRACT_ANGAJAT 
+values (1, 10, to_date('20-06-2015','dd-mm-yyyy'), 10, 4500);
+
+insert into CONTRACT_ANGAJAT 
+values (2, 20, to_date('18-06-2018','dd-mm-yyyy'), 5, 3800);
+
+insert into CONTRACT_ANGAJAT 
+values (3, 30, to_date('08-11-2000','dd-mm-yyyy'), 20, 6500);
+
+insert into CONTRACT_ANGAJAT 
+values (4, 40, to_date('12-03-2005','dd-mm-yyyy'), 15, 5000);
+
+insert into CONTRACT_ANGAJAT 
+values (5, 50, to_date('18-05-2021','dd-mm-yyyy'), NULL, 3000);
+
+insert into CONTRACT_ANGAJAT 
+values (6, 60, to_date('20-09-2005','dd-mm-yyyy'), 13, 4500);
+
+insert into CONTRACT_ANGAJAT 
+values (7, 70, to_date('21-08-2007','dd-mm-yyyy'), 2, 3100);
+
+insert into CONTRACT_ANGAJAT 
+values (8, 80, to_date('07-03-2002','dd-mm-yyyy'), 4, 3500);
+
+insert into CONTRACT_ANGAJAT 
+values (9, 90, to_date('20-02-2010','dd-mm-yyyy'), 5, 4000);
+
+select *
+from contract_angajat;
+
+commit;
+
+create table CLIENT
+( id_client number(5) constraint pk_client primary key,
+  nume varchar2(20) constraint nume_client not null,
+  prenume varchar2(20) constraint prenume_client not null,
+  CNP varchar2(20) not null,
+  telefon varchar2(20) not null,
+  adresa_email varchar(40) not null,
+  constraint cnp_unic unique(CNP),
+  constraint nr_tel unique(telefon),
+  constraint email unique(adresa_email),
+  constraint nume_pren_unic unique(nume, prenume)
+  );
+  
+CREATE SEQUENCE SEQ_CL
+INCREMENT by 1
+START WITH 100
+MAXVALUE 10000
+NOCYCLE;
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Badea', 'Radu', '1851021345131', '0739069122', 'badea.radu22@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Rebegea', 'Tiberiu', '1920617149053', '0746069782', 'rebegea.tiberiu22@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Oprea', 'Sofia', '1870505168646', '0732156278', 'oprea.sofia@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Iancu', 'Lorena', '1870619152998', '0749068132', 'lorena.iancu@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Ene', 'Robert', '1930729213031', '0728114281', 'ene.robert01@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Stoica', 'Ruxandra', '1900806182888', '0728567102', 'ruxandra.stoica@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Preda', 'Bianca', '1860114313017', '0741289341', 'bianca.preda@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Parvu', 'Vlad', '1921113049026', '0748901283', 'vlad.parvu@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Modrescu', 'Adrian', '1860525171600', '0735189290', 'adrian.modrescu@yahoo.com');
+
+insert into CLIENT 
+values (110, 'Iancu', 'Alexa', '1234984610126', '0739136790', 'iancu.alexa@yahoo.com');
+
+select *
+from client;
+
+commit;
+
+create table HOTEL
+( id_hotel number(5) constraint pk_hotel primary key,
+  nume_hotel varchar2(20) not null,
+  nr_de_contact varchar2(20) not null,
+  nr_stele number(10),
+  constraint nr_contact unique(nr_de_contact)
+);
+
+insert into HOTEL 
+values (1, 'Aqua', '0244173384', 4);
+
+insert into HOTEL 
+values (2, 'Astoria', '0244378414', 3);
+
+insert into HOTEL 
+values (3, 'Golden', '0244970084', 5);
+
+insert into HOTEL 
+values (4, 'Intercontinental', '0244571184', 4);
+
+insert into HOTEL 
+values (5, 'Palace', '0244026352', 5);
+
+insert into HOTEL 
+values (6, 'Del Mar', '0244102368', 4);
+
+select *
+from hotel;
+
+commit;
+
+create table CAMERA
+( id_camera number(5) constraint pk_camera primary key,
+  id_hotel number(5) not null constraint fkey_hotel references HOTEL(id_hotel),
+  nr_camera number(5) not null,
+  etaj number(5),
+  capacitate varchar2(20)
+  );
+
+CREATE SEQUENCE SEQ_CAM
+INCREMENT by 1
+START WITH 200
+MAXVALUE 10000
+NOCYCLE;
+  
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL,1 , 301, 1, 'dubla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 1, 302, 1, 'standard');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 1, 303, 1, 'dubla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 2, 301, 2, 'tripla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 3, 310, 4, 'dubla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 4, 340, 5, 'tripla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 5, 313, 3, 'tripla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 6, 321, 8, 'matrimoniala');
+
+insert into CAMERA
+values (SEQ_CAM.NEXTVAL, 3, 317, 7, 'dubla');
+
+insert into CAMERA
+values (SEQ_CAM.NEXTVAL, 5, 302, 2, 'dubla');
+
+select *
+from camera;
+
+commit;
+
+create table FACILITATI
+( id_facilitate number(5) constraint pk_fac primary key,
+  denumire varchar2(40) not null
+);
+
+insert into FACILITATI 
+values (1, 'balcon');
+
+insert into FACILITATI 
+values (2, 'aer conditionat');
+
+insert into FACILITATI 
+values (3, 'frigider');
+
+insert into FACILITATI 
+values (4, 'pat suplimentar');
+
+insert into FACILITATI 
+values (5, 'uscator de par');
+
+select *
+from facilitati;
+
+commit;
+
+create table CONTINE_FAC
+( 
+ id_camera number(5) constraint fk_cam references CAMERA(id_camera),
+ id_facilitate number(5) constraint fk_fac references FACILITATI(id_facilitate),
+ pret_suplimentar number(5),
+ constraint pk_compus2 primary key(id_camera, id_facilitate)
+);
+
+insert into CONTINE_FAC 
+values (201, 1, null);
+
+insert into CONTINE_FAC 
+values (201, 2, null);
+
+insert into CONTINE_FAC 
+values (203, 3, null);
+
+insert into CONTINE_FAC 
+values (202, 4, 200);
+
+insert into CONTINE_FAC 
+values (206, 5, null);
+
+insert into CONTINE_FAC 
+values (201, 3, null);
+
+insert into CONTINE_FAC 
+values (203, 2, null);
+
+insert into CONTINE_FAC 
+values (208, 2, null);
+
+insert into CONTINE_FAC 
+values (210, 1, null);
+
+insert into CONTINE_FAC 
+values (207, 5, null);
+
+insert into CONTINE_FAC 
+values (207, 1, null);
+
+select *
+from contine_fac;
+
+commit;
+
+create table DESTINATIE
+(id_destinatie number(5) constraint pk_destinatie primary key,
+ oras varchar2(20) not null,
+ tara varchar(20) not null,
+ continent varchar2(20) not null
+ );
+ 
+insert into DESTINATIE 
+values (1, 'Constanta', 'Romania','Europa');
+
+insert into DESTINATIE 
+values (2, 'Paris', 'Franta','Europa');
+
+insert into DESTINATIE 
+values (3, 'Barcelona', 'Spania','Europa');
+
+insert into DESTINATIE 
+values (4, 'Venetia', 'Italia','Europa');
+
+insert into DESTINATIE 
+values (5, 'Brasov', 'Romania','Europa');
+
+insert into DESTINATIE
+values (6, 'Cluj Napoca','Romania', 'Europa');
+
+select *
+from destinatie;
+
+commit;
+
+create table FIRMA
+(id_firma number(5) constraint pk_firma primary key,
+ denumire_firma varchar2(20) not null,
+ sediu varchar2(20),
+ telefon varchar(20) not null,
+ constraint t_unic unique (telefon)
+ );
+ 
+insert into FIRMA 
+values (1, 'Matrix Transport', 'Bucuresti','0742102828');
+
+insert into FIRMA 
+values (2, 'Mateo Tour', 'Bucuresti','0743792828');
+
+insert into FIRMA 
+values (3, 'Air Bucharest', 'Bucuresti','0742100815');
+
+insert into FIRMA 
+values (4, 'AVX Auto', 'Bucuresti','0722101228');
+
+insert into FIRMA 
+values (5, 'Blue Air', 'Bucuresti','0736725278');
+
+insert into FIRMA 
+values (6, 'TAROM', 'Bucuresti','0729912267');
+
+select *
+from firma;
+
+commit;
+
+create table TRANSPORT
+(id_transport number(5) constraint pk_transport primary key,
+ id_firma number(5) not null constraint fk_firma references FIRMA(id_firma),
+ mijloc_de_transport varchar2(20) not null,
+ durata_max number(10),
+ durata_min number(10),
+ constraint max_min check(durata_max>=durata_min)
+ );
+ 
+CREATE SEQUENCE SEQ_TR
+INCREMENT by 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 2 , 'autocar' , 6, 4);
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 5 , 'avion' , 4, 3);
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 1 , 'autocar' , 17, 15);
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 4 , 'autoturism' , 3, 2);
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 3 , 'avion' , 3, 2);
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 6 , 'avion' , 3, 3);
+
+select *
+from transport;
+
+commit;
+
+create table OFERTA
+( id_oferta number(5) constraint pk_oferta primary key,
+  tip_oferta varchar2(30) not null,
+  pret number(10) not null,
+  id_destinatie number(5) not null constraint fk_dest references DESTINATIE(id_destinatie),
+  id_transport number(5) constraint fk_tr references TRANSPORT(id_transport)
+);
+
+insert into OFERTA 
+values (100, 'sejur', 5500,1,10);
+
+insert into OFERTA 
+values (200, 'sejur', 3800,1,null);
+
+insert into OFERTA 
+values (300, 'sejur', 7000,2,20);
+
+insert into OFERTA 
+values (400, 'sejur', 9500,4,50);
+
+insert into OFERTA 
+values (500, 'sejur', 3200,1,null);
+
+insert into OFERTA 
+values (600, 'sejur', 5000,1,null);
+
+insert into OFERTA 
+values (700, 'sejur', 9500,3,60);
+
+insert into OFERTA 
+values (800, 'sejur', 5500,1,60);
+
+insert into OFERTA 
+values (900, 'city break', 3000,1,null);
+
+insert into OFERTA 
+values (1000, 'sejur', 5000,6,30);
+
+insert into OFERTA 
+values (1100, 'sejur', 8600,5,40);
+
+insert into OFERTA 
+values (1200, 'city break', 7000,3,50);
+
+select *
+from oferta;
+
+commit;
+
+create table OBTINE
+(id_client number(5) constraint fk_ct references CLIENT(id_client),
+ id_angajat number(5) constraint fk_a references ANGAJAT(id_angajat),
+ id_oferta number(5) constraint fk_of references OFERTA(id_oferta),
+ id_camera number(5) constraint fk_cam1 references CAMERA(id_camera),
+ data_start date default sysdate,
+ data_end date default sysdate,
+ constraint pk_compus3 primary key(id_client, id_angajat, id_oferta, id_camera),
+ constraint start_end check(data_end>=data_start)
+);
+
+insert into OBTINE 
+values (101, 30, 100,203, to_date('11-07-2020','dd-mm-yyyy'), to_date('17-07-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (101, 60, 500, 202,to_date('20-05-2021','dd-mm-yyyy'), to_date('24-05-2021','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (103, 60, 600, 203, to_date('20-07-2020','dd-mm-yyyy'), to_date('26-07-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (102, 60, 200, 201, to_date('12-07-2020','dd-mm-yyyy'), to_date('18-07-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (107, 60, 800, 203, to_date('10-07-2020','dd-mm-yyyy'), to_date('16-07-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (104, 30, 700, 205, to_date('10-08-2020','dd-mm-yyyy'), to_date('20-08-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (105, 60, 300, 204, to_date('28-07-2020','dd-mm-yyyy'), to_date('02-08-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (106, 30, 900, 208, to_date('22-07-2021','dd-mm-yyyy'), to_date('25-07-2021','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (107, 60, 1200, 206, to_date('02-11-2020','dd-mm-yyyy'), to_date('05-11-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (109, 30, 1000, 207, to_date('17-03-2021','dd-mm-yyyy'), to_date('24-03-2021','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (108, 30, 1100, 206, to_date('25-12-2020','dd-mm-yyyy'), to_date('03-01-2021','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (106, 60, 400, 207, to_date('23-05-2021','dd-mm-yyyy'), to_date('29-05-2021','dd-mm-yyyy'));
+
+select *
+from obtine;
+
+commit;
