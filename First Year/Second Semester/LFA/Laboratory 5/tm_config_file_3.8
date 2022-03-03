@@ -1,0 +1,39 @@
+states:
+    q1
+    q2
+    q3
+    q4
+    q5
+    qaccept
+    qreject
+End
+sigma:
+    0
+End
+gamma:
+    0
+    x
+    s
+End
+transitions:
+    q1,q2,0,s,R
+    q2,q2,x,R
+    q2,q3,0,x,R
+    q3,q3,x,R
+    q3,q4,0,R
+    q4,q4,x,R
+    q4,q3,0,x,R
+    q4,qreject,s,R
+    q3,q5,s,L
+    q5,q5,0,L
+    q5,q5,x,L
+    q5,q2,s,R
+    q2,qaccept,s,R
+    q1,qreject,s,R
+    q1,qreject,x,R
+End
+special_states:
+    q1
+    qaccept
+    qreject
+End
