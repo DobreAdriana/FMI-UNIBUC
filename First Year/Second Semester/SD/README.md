@@ -2,6 +2,11 @@
 
 A red–black tree is *a self-balancing binary search tree*. Each node stores an extra bit representing "color" ("red" or "black"), used to ensure that the tree remains balanced during operations (insert, delete, etc).
 
+### Content
+- source code
+- technical report
+- tests (test 1 - 6)
+
 #### Implemented operations:
 - insertNode
 - deleteNode
