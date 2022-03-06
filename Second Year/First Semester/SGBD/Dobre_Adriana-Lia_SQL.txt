@@ -1,0 +1,1415 @@
+--4. 
+create table ANGAJAT
+( id_angajat number(5) constraint pk_ang primary key,
+  nume varchar2(20) not null,
+  prenume varchar2(20) not null,
+  adresa varchar2(20) not null,
+  telefon varchar2(20) not null,
+  tip_angajat varchar2(20) not null,
+  functie varchar2(40),
+  limba_vorbita varchar2(20),
+  comision number(10)
+  );
+alter table ANGAJAT
+add constraint tel_unic unique(telefon);
+alter table ANGAJAT
+add constraint nume_prenume_unic unique(nume, prenume);
+
+create table CONTRACT_ANGAJAT
+( id_contract number(5) constraint pk_contract primary key,
+  id_angajat number(5) not null constraint fkey_ang references ANGAJAT(id_angajat),
+  data_angajarii date default sysdate ,
+  experienta number(3),
+  salariu number(10) not null,
+  constraint ang unique(id_angajat)
+  );
+
+create table CLIENT
+( id_client number(5) constraint pk_client primary key,
+  nume varchar2(20) constraint nume_client not null,
+  prenume varchar2(20) constraint prenume_client not null,
+  CNP varchar2(20) not null,
+  telefon varchar2(20) not null,
+  adresa_email varchar(40) not null,
+  constraint cnp_unic unique(CNP),
+  constraint nr_tel unique(telefon),
+  constraint email unique(adresa_email),
+  constraint nume_pren_unic unique(nume, prenume)
+  );
+
+create table HOTEL
+( id_hotel number(5) constraint pk_hotel primary key,
+  nume_hotel varchar2(20) not null,
+  nr_de_contact varchar2(20) not null,
+  nr_stele number(10),
+  constraint nr_contact unique(nr_de_contact)
+);
+
+create table CAMERA
+( id_camera number(5) constraint pk_camera primary key,
+  id_hotel number(5) not null constraint fkey_hotel references HOTEL(id_hotel),
+  nr_camera number(5) not null,
+  etaj number(5),
+  capacitate varchar2(20)
+  );
+
+create table FACILITATI
+( id_facilitate number(5) constraint pk_fac primary key,
+  denumire varchar2(40) not null
+);
+
+create table CONTINE_FAC
+( 
+ id_camera number(5) constraint fk_cam references CAMERA(id_camera),
+ id_facilitate number(5) constraint fk_fac references FACILITATI(id_facilitate),
+ pret_suplimentar number(5),
+ constraint pk_compus2 primary key(id_camera, id_facilitate)
+);
+
+create table DESTINATIE
+(id_destinatie number(5) constraint pk_destinatie primary key,
+ oras varchar2(20) not null,
+ tara varchar(20) not null,
+ continent varchar2(20) not null
+ );
+
+create table FIRMA
+(id_firma number(5) constraint pk_firma primary key,
+ denumire_firma varchar2(20) not null,
+ sediu varchar2(20),
+ telefon varchar(20) not null,
+ constraint t_unic unique (telefon)
+ );
+
+create table TRANSPORT
+(id_transport number(5) constraint pk_transport primary key,
+ id_firma number(5) not null constraint fk_firma references FIRMA(id_firma),
+ mijloc_de_transport varchar2(20) not null,
+ durata_max number(10),
+ durata_min number(10),
+ constraint max_min check(durata_max>=durata_min)
+ );
+
+create table OFERTA
+( id_oferta number(5) constraint pk_oferta primary key,
+  tip_oferta varchar2(30) not null,
+  pret number(10) not null,
+  id_destinatie number(5) not null constraint fk_dest references DESTINATIE(id_destinatie),
+  id_transport number(5) constraint fk_tr references TRANSPORT(id_transport)
+);
+
+create table OBTINE
+(id_client number(5) constraint fk_ct references CLIENT(id_client),
+ id_angajat number(5) constraint fk_a references ANGAJAT(id_angajat),
+ id_oferta number(5) constraint fk_of references OFERTA(id_oferta),
+ id_camera number(5) constraint fk_cam1 references CAMERA(id_camera),
+ data_start date default sysdate,
+ data_end date default sysdate,
+ constraint pk_compus3 primary key(id_client, id_angajat, id_oferta, id_camera),
+ constraint start_end check(data_end>=data_start)
+);
+
+--5.
+CREATE SEQUENCE SEQ_ANG
+INCREMENT by 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+  
+insert into ANGAJAT 
+values (10 , 'Popescu', 'Ion', 'Strada Bucuriei', '0745678192', 'Contabil', 'inregistreaza tranzactii', NULL, NULL);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Costache', 'Ioana', 'Strada Aviatiei', '0731278142', 'Ghid turistic', NULL , 'engleza' , NULL);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Bucur', 'Alexandru', 'Strada Soarelui', '0749078122', 'Agent de vanzare', NULL, NULL, 5);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Marinescu', 'Catalina', 'Strada Victoriei', '0721908192', 'Contabil', 'verifica tranzactii', NULL, NULL);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Tudorache', 'Marian', 'Strada Romana', '0731182812', 'Ghid turistic', NULL , 'franceza' , NULL);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Sandu', 'Maria', 'Strada Ciresului', '0749197132', 'Agent de vanzare', NULL, NULL, 4);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Radu', 'Alexandru', 'Strada Libertatii', '0749017132', 'Agent de vanzare', NULL, NULL, 2);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Enache', 'Andrei', 'Strada Independentei', '0739022132', 'Agent de vanzare', NULL, NULL, 1);
+
+insert into ANGAJAT 
+values (SEQ_ANG.NEXTVAL, 'Enache', 'Alexandra', 'Strada Ion Creanga', '0746617138', 'Agent de vanzare', NULL, NULL, 3);
+
+select *
+from angajat;
+
+insert into CONTRACT_ANGAJAT 
+values (1, 10, to_date('20-06-2015','dd-mm-yyyy'), 10, 4500);
+
+insert into CONTRACT_ANGAJAT 
+values (2, 20, to_date('18-06-2018','dd-mm-yyyy'), 5, 3800);
+
+insert into CONTRACT_ANGAJAT 
+values (3, 30, to_date('08-11-2000','dd-mm-yyyy'), 20, 6500);
+
+insert into CONTRACT_ANGAJAT 
+values (4, 40, to_date('12-03-2005','dd-mm-yyyy'), 15, 5000);
+
+insert into CONTRACT_ANGAJAT 
+values (5, 50, to_date('18-05-2021','dd-mm-yyyy'), NULL, 3000);
+
+insert into CONTRACT_ANGAJAT 
+values (6, 60, to_date('20-09-2005','dd-mm-yyyy'), 13, 4500);
+
+insert into CONTRACT_ANGAJAT 
+values (7, 70, to_date('21-08-2007','dd-mm-yyyy'), 2, 3100);
+
+insert into CONTRACT_ANGAJAT 
+values (8, 80, to_date('07-03-2002','dd-mm-yyyy'), 4, 3500);
+
+insert into CONTRACT_ANGAJAT 
+values (9, 90, to_date('20-02-2010','dd-mm-yyyy'), 5, 4000);
+
+select *
+from contract_angajat;
+
+CREATE SEQUENCE SEQ_CL
+INCREMENT by 1
+START WITH 100
+MAXVALUE 10000
+NOCYCLE;
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Badea', 'Radu', '1851021345131', '0739069122', 'badea.radu22@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Rebegea', 'Tiberiu', '1920617149053', '0746069782', 'rebegea.tiberiu22@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Oprea', 'Sofia', '1870505168646', '0732156278', 'oprea.sofia@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Iancu', 'Lorena', '1870619152998', '0749068132', 'lorena.iancu@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Ene', 'Robert', '1930729213031', '0728114281', 'ene.robert01@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Stoica', 'Ruxandra', '1900806182888', '0728567102', 'ruxandra.stoica@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Preda', 'Bianca', '1860114313017', '0741289341', 'bianca.preda@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Parvu', 'Vlad', '1921113049026', '0748901283', 'vlad.parvu@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Modrescu', 'Adrian', '1860525171600', '0735189290', 'adrian.modrescu@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Iancu', 'Alexa', '1234984610126', '0739136790', 'iancu.alexa@yahoo.com');
+
+insert into CLIENT 
+values (SEQ_CL.NEXTVAL, 'Teches', 'Laurentiu', '1646134529013', '0721137690', 'teches.laur@yahoo.com');
+
+select *
+from client;
+
+insert into HOTEL 
+values (1, 'Aqua', '0244173384', 4);
+
+insert into HOTEL 
+values (2, 'Astoria', '0244378414', 3);
+
+insert into HOTEL 
+values (3, 'Golden', '0244970084', 5);
+
+insert into HOTEL 
+values (4, 'Intercontinental', '0244571184', 4);
+
+insert into HOTEL 
+values (5, 'Palace', '0244026352', 5);
+
+insert into HOTEL 
+values (6, 'Del Mar', '0244102368', 4);
+
+select *
+from hotel;
+
+CREATE SEQUENCE SEQ_CAM
+INCREMENT by 1
+START WITH 200
+MAXVALUE 10000
+NOCYCLE;
+  
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL,1 , 301, 1, 'dubla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 1, 302, 1, 'standard');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 1, 303, 1, 'dubla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 2, 301, 2, 'tripla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 3, 310, 4, 'dubla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 4, 340, 5, 'tripla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 5, 313, 3, 'tripla');
+
+insert into CAMERA 
+values (SEQ_CAM.NEXTVAL, 6, 321, 8, 'matrimoniala');
+
+insert into CAMERA
+values (SEQ_CAM.NEXTVAL, 3, 317, 7, 'dubla');
+
+insert into CAMERA
+values (SEQ_CAM.NEXTVAL, 5, 302, 2, 'dubla');
+
+select *
+from camera;
+
+insert into FACILITATI 
+values (1, 'balcon');
+
+insert into FACILITATI 
+values (2, 'aer conditionat');
+
+insert into FACILITATI 
+values (3, 'frigider');
+
+insert into FACILITATI 
+values (4, 'pat suplimentar');
+
+insert into FACILITATI 
+values (5, 'uscator de par');
+
+select *
+from facilitati;
+
+insert into CONTINE_FAC 
+values (201, 1, null);
+
+insert into CONTINE_FAC 
+values (201, 2, null);
+
+insert into CONTINE_FAC 
+values (203, 3, null);
+
+insert into CONTINE_FAC 
+values (202, 4, 200);
+
+insert into CONTINE_FAC 
+values (206, 5, null);
+
+insert into CONTINE_FAC 
+values (201, 3, null);
+
+insert into CONTINE_FAC 
+values (203, 2, null);
+
+insert into CONTINE_FAC 
+values (208, 2, null);
+
+insert into CONTINE_FAC 
+values (210, 1, null);
+
+insert into CONTINE_FAC 
+values (207, 5, null);
+
+insert into CONTINE_FAC 
+values (207, 1, null);
+
+select *
+from contine_fac;
+
+insert into DESTINATIE 
+values (1, 'Constanta', 'Romania','Europa');
+
+insert into DESTINATIE 
+values (2, 'Paris', 'Franta','Europa');
+
+insert into DESTINATIE 
+values (3, 'Barcelona', 'Spania','Europa');
+
+insert into DESTINATIE 
+values (4, 'Venetia', 'Italia','Europa');
+
+insert into DESTINATIE 
+values (5, 'Brasov', 'Romania','Europa');
+
+insert into DESTINATIE
+values (6, 'Cluj Napoca','Romania', 'Europa');
+
+select *
+from destinatie;
+
+insert into FIRMA 
+values (1, 'Matrix Transport', 'Bucuresti','0742102828');
+
+insert into FIRMA 
+values (2, 'Mateo Tour', 'Bucuresti','0743792828');
+
+insert into FIRMA 
+values (3, 'Air Bucharest', 'Bucuresti','0742100815');
+
+insert into FIRMA 
+values (4, 'AVX Auto', 'Bucuresti','0722101228');
+
+insert into FIRMA 
+values (5, 'Blue Air', 'Bucuresti','0736725278');
+
+insert into FIRMA 
+values (6, 'TAROM', 'Bucuresti','0729912267');
+
+select *
+from firma;
+
+CREATE SEQUENCE SEQ_TR
+INCREMENT by 10
+START WITH 10
+MAXVALUE 10000
+NOCYCLE;
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 2 , 'autocar' , 6, 4);
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 5 , 'avion' , 4, 3);
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 1 , 'autocar' , 17, 15);
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 4 , 'autoturism' , 3, 2);
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 3 , 'avion' , 3, 2);
+
+insert into TRANSPORT 
+values (SEQ_TR.NEXTVAL, 6 , 'avion' , 3, 3);
+
+select *
+from transport;
+
+insert into OFERTA 
+values (100, 'sejur', 5500,1,10);
+
+insert into OFERTA 
+values (200, 'sejur', 3800,1,null);
+
+insert into OFERTA 
+values (300, 'sejur', 7000,2,20);
+
+insert into OFERTA 
+values (400, 'sejur', 9500,4,50);
+
+insert into OFERTA 
+values (500, 'sejur', 3200,1,null);
+
+insert into OFERTA 
+values (600, 'sejur', 5000,1,null);
+
+insert into OFERTA 
+values (700, 'sejur', 9500,3,60);
+
+insert into OFERTA 
+values (800, 'sejur', 5500,1,60);
+
+insert into OFERTA 
+values (900, 'city break', 3000,1,null);
+
+insert into OFERTA 
+values (1000, 'sejur', 5000,6,30);
+
+insert into OFERTA 
+values (1100, 'sejur', 8600,5,40);
+
+insert into OFERTA 
+values (1200, 'city break', 7000,3,50);
+
+select *
+from oferta;
+
+insert into OBTINE 
+values (101, 30, 100,203, to_date('11-07-2020','dd-mm-yyyy'), to_date('17-07-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (101, 60, 500, 202,to_date('20-05-2021','dd-mm-yyyy'), to_date('24-05-2021','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (103, 60, 600, 203, to_date('20-07-2020','dd-mm-yyyy'), to_date('26-07-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (102, 60, 200, 201, to_date('12-07-2020','dd-mm-yyyy'), to_date('18-07-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (107, 60, 800, 203, to_date('10-07-2020','dd-mm-yyyy'), to_date('16-07-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (104, 30, 700, 205, to_date('10-08-2020','dd-mm-yyyy'), to_date('20-08-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (105, 60, 300, 204, to_date('28-07-2020','dd-mm-yyyy'), to_date('02-08-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (106, 30, 900, 208, to_date('22-07-2021','dd-mm-yyyy'), to_date('25-07-2021','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (107, 60, 1200, 206, to_date('02-11-2020','dd-mm-yyyy'), to_date('05-11-2020','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (109, 30, 1000, 207, to_date('17-03-2021','dd-mm-yyyy'), to_date('24-03-2021','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (108, 30, 1100, 206, to_date('25-12-2020','dd-mm-yyyy'), to_date('03-01-2021','dd-mm-yyyy'));
+
+insert into OBTINE 
+values (106, 60, 400, 207, to_date('23-05-2021','dd-mm-yyyy'), to_date('29-05-2021','dd-mm-yyyy'));
+
+select *
+from obtine;
+
+--6.
+--Pentru un client introdus de la tastatura afisati numarul de oferte achizitionate, detalii despre acestea
+--si facilitatile pe care le contine.
+
+CREATE OR REPLACE PROCEDURE p_ex6 
+    (v_nume client.nume%TYPE)
+   IS 
+      nr_oferte NUMBER;
+      nr_fac NUMBER;
+      cod_client client.id_client%TYPE;
+      TYPE tablou_imbricat IS TABLE OF obtine%ROWTYPE;
+      info_of tablou_imbricat;
+      TYPE tablou_indexat IS TABLE OF facilitati%ROWTYPE 
+                      INDEX BY BINARY_INTEGER;
+      fac_camera tablou_indexat;
+      exc_oferte EXCEPTION;
+      exc_fac EXCEPTION;
+    BEGIN
+      --pentru a intra pe exceptia de no_data_found trebuie sa verificam
+      --daca numele exista in tabel, daca nu faceam acest select se facea 
+      --confuzie intre clientii care nu exista si clientii care nu au achizitionat 
+      --oferte(nu intra niciodata pe no_data_found, ci intra pe exc_oferte)
+      SELECT id_client
+      INTO cod_client
+      FROM client
+      WHERE UPPER(nume) = UPPER(v_nume);
+      --retinem detaliile despre oferte 
+      SELECT o.id_client,o.id_angajat,o.id_oferta,o.id_camera, data_start, data_end
+      BULK COLLECT INTO info_of
+      FROM client c, obtine o
+      WHERE UPPER(c.nume) = UPPER(v_nume) and o.id_client = c.id_client;
+      nr_oferte := info_of.COUNT;
+      IF nr_oferte = 0 THEN --daca clientul nu a achizitionat nicio oferta
+           RAISE exc_oferte;
+      ELSIF nr_oferte = 1 THEN --daca clientul a achizionat doar o oferta
+          DBMS_OUTPUT.PUT_LINE('Clientul ' || v_nume || ' a achizitionat o oferta.');
+          DBMS_OUTPUT.PUT_LINE('Oferta achizitionata este:');
+      ELSE
+          DBMS_OUTPUT.PUT_LINE('Clientul ' || v_nume || ' a achizitionat ' || nr_oferte || ' oferte.');
+          DBMS_OUTPUT.PUT_LINE('Ofertele achizitionate sunt:');
+      END IF;
+      --parcurgem fiecare oferta
+      FOR i IN info_of.FIRST..info_of.LAST LOOP
+         --afisam detaliile despre oferta
+         DBMS_OUTPUT.PUT_LINE(i || '. Oferta ' || info_of(i).id_oferta || ' -> incepe pe data de ' || info_of(i).data_start);
+         DBMS_OUTPUT.PUT_LINE('              -> se termina pe data de ' || info_of(i).data_end);
+         DBMS_OUTPUT.PUT_LINE('              -> este rezervata pe camera ' || info_of(i).id_camera);
+         --retinem facilitatile camerei
+         SELECT f.id_facilitate,denumire
+         BULK COLLECT INTO fac_camera
+         FROM obtine o, contine_fac cf, facilitati f
+         WHERE id_oferta = info_of(i).id_oferta and o.id_camera = cf.id_camera and cf.id_facilitate = f.id_facilitate;
+         nr_fac := fac_camera.COUNT;
+         IF nr_fac = 0 THEN --in cazul in care camera nu are facilitati
+            RAISE exc_fac;
+         ELSIF nr_fac = 1 THEN --in cazul in care camera are doar o facilitate
+            DBMS_OUTPUT.PUT_LINE('Camera ' || info_of(i).id_camera || ' are o singura facilitate:');
+         ELSE
+            DBMS_OUTPUT.PUT_LINE('Camera ' || info_of(i).id_camera || ' are ' || nr_fac || ' facilitati:');
+         END IF;
+         --afisam facilitatile camerei
+         FOR j in fac_camera.FIRST..fac_camera.last LOOP
+             DBMS_OUTPUT.PUT_LINE('-> ' || fac_camera(j).denumire);
+         END LOOP;
+         DBMS_OUTPUT.NEW_LINE;
+     END LOOP;
+     EXCEPTION --tratam exceptii
+         WHEN NO_DATA_FOUND THEN
+               RAISE_APPLICATION_ERROR(-20000, 'Nu exista clientul.');
+         WHEN TOO_MANY_ROWS THEN
+               RAISE_APPLICATION_ERROR(-20001, 'Exista mai multi clienti cu acelasi nume.');
+         WHEN exc_oferte THEN
+               RAISE_APPLICATION_ERROR(-20002, 'Clientul nu a achizitionat nicio oferta.');
+         WHEN exc_fac THEN
+               RAISE_APPLICATION_ERROR(-20003, 'Camera nu are facilitati.');
+END p_ex6;
+/
+--citim de la tastatura clientul si apelam procedura pentru clientul introdus
+DECLARE
+    v_nume client.nume%TYPE := Initcap('&p_nume');
+BEGIN
+    p_ex6(v_nume);
+END;
+/
+--am apelat pentru clientul Iancu
+BEGIN
+   p_ex6('Iancu');
+END;
+/
+
+--7.
+--Pentru o luna introdusa de la tastatura, obtineti pentru fiecare destinatie top 3 cele mai scumpe oferte. 
+--Daca exista mai multe oferte care au acelasi pret, atunci acestea vor ocupa aceeasi pozitie în top 3.
+
+CREATE OR REPLACE PROCEDURE p_ex7
+        (luna NUMBER)
+      IS
+        --am luat un cursor pentru destinatii
+        --daca nu faceam cu UNION nu lua destinatiile care nu au avut nicio oferta
+        --in luna introdusa de la tastatura 
+        CURSOR cursor_destinatie IS
+            SELECT d.id_destinatie, MAX(oras),COUNT(o.id_oferta)
+            FROM destinatie d, oferta o, obtine ob
+            WHERE d.id_destinatie = o.id_destinatie AND TO_CHAR(data_start, 'MM') = luna
+                     AND o.id_oferta = ob.id_oferta
+            GROUP BY d.id_destinatie
+            UNION
+            SELECT id_destinatie,oras,0
+            FROM destinatie
+            WHERE id_destinatie NOT IN (SELECT d.id_destinatie
+                                        FROM destinatie d, oferta o, obtine ob
+                                        WHERE d.id_destinatie = o.id_destinatie 
+                                              AND TO_CHAR(data_start, 'MM') = luna
+                                              AND o.id_oferta = ob.id_oferta);
+        --am luat un cursor pentru oferte
+        CURSOR cursor_oferta IS
+            SELECT o.id_oferta, pret, id_destinatie
+            FROM obtine o, oferta oft
+            WHERE TO_CHAR(data_start, 'MM') = luna AND o.id_oferta = oft.id_oferta
+            ORDER BY pret DESC;
+        cod_dest destinatie.id_destinatie%TYPE;
+        nume_dest destinatie.oras%TYPE;
+        nr_oferte NUMBER(5);
+        nr_oferte_total NUMBER(5);
+        cod_oferta oferta.id_oferta%TYPE;
+        pret_of oferta.pret%TYPE;
+        cod_destinatie oferta.id_destinatie%TYPE;
+        top number(1) :=0; --top
+        aux number; --retinem pretul anterior
+        prima_trecere number :=1;
+        exc_luna EXCEPTION;
+        exc_no_data_found EXCEPTION;
+        BEGIN
+           --verificam daca luna introdusa poate exista
+           IF luna <= 0 OR luna > 12 THEN
+               RAISE exc_luna;
+           END IF;
+           --calculam nr total de oferte achizitionate in luna respectiva
+           SELECT count(data_start)
+           INTO nr_oferte_total
+           FROM obtine
+           WHERE TO_CHAR(data_start, 'MM') = luna;
+           --verificam daca in tabel exista vreo oferta achizitionata in luna introdusa
+           IF nr_oferte_total = 0 THEN
+               RAISE exc_no_data_found; 
+           ELSIF nr_oferte_total = 1 THEN --daca exista doar o oferta achizitionata
+               DBMS_OUTPUT.PUT_LINE('In luna a-' || luna || '-a s-a achizitionat doar o oferta.');
+           ELSE
+               DBMS_OUTPUT.PUT_LINE('In luna a-' || luna || '-a s-au achizitionat in total ' || nr_oferte_total || ' oferte.');
+           END IF;
+           OPEN cursor_destinatie; --deschidem cursorul destinatie
+           DBMS_OUTPUT.PUT_LINE('In luna a-' || luna || '-a se regasesc urmatoarele topuri:' );
+           LOOP 
+            top := 0; --topul porneste de la 0 la fiecare destinatie
+            prima_trecere := 1; --prima trecere la fiecare destinatie
+            FETCH cursor_destinatie
+            INTO cod_dest,nume_dest, nr_oferte;--incarcam linia in variabilele mentionate
+            EXIT WHEN cursor_destinatie%NOTFOUND; --iesim cand nu mai avem date
+            DBMS_OUTPUT.PUT_LINE('Destinatia: ' || nume_dest);
+            IF nr_oferte=0 THEN --daca nr de oferte este 0 pt destinatia respectiva
+                 DBMS_OUTPUT.PUT_LINE('Nimeni nu a plecat in aceasta destinatie in luna a-' || luna || '-a.');
+            ELSE
+                OPEN cursor_oferta; --deschidem cursorul cursor_oferta
+                LOOP
+                    FETCH cursor_oferta
+                    INTO cod_oferta, pret_of,cod_destinatie; --incarcam linia in variabilele mentionate
+                    EXIT WHEN cursor_oferta%NOTFOUND OR top = 3; --iesim cand nu avem date sau
+                                    -- cand ajungem la top 3
+                    IF cod_dest = cod_destinatie THEN 
+                       IF prima_trecere = 1 THEN --daca suntem la prima trecere
+                          aux := pret_of;  --retinem pretul curent
+                       END IF;
+                       IF aux <> pret_of OR prima_trecere = 1 THEN --daca suntem la prima trecere sau
+                                                      --daca pretul anterior si pretul curent sunt diferite
+                              DBMS_OUTPUT.PUT_LINE('Top ' || (top+1));
+                              top := top + 1; --crestem in top
+                              aux := pret_of; --retinem pretul curent
+                       END IF;
+                       prima_trecere := prima_trecere +1;
+                       DBMS_OUTPUT.PUT_LINE('-> oferta: ' || cod_oferta || ' la pretul: ' || pret_of);
+                    END IF;
+                END LOOP;
+                CLOSE cursor_oferta; --inchidem cursorul cursor_oferta
+            END IF;
+            DBMS_OUTPUT.NEW_LINE;
+            END LOOP;
+            CLOSE cursor_destinatie; --inchidem cursorul cursor_destinatie;
+            EXCEPTION --tratam exceptii
+                 WHEN exc_no_data_found THEN
+                       RAISE_APPLICATION_ERROR(-20000, 'Nu s-au achizitionat oferte in luna respectiva.');
+                 WHEN exc_luna THEN
+                       RAISE_APPLICATION_ERROR(-20001,'Un an are 12 luni.Incercati din nou, introducand un numar intre 1 si 12.');
+END p_ex7;
+/
+            
+
+DECLARE
+    v_luna NUMBER := &p_luna;
+BEGIN
+    p_ex7(v_luna);
+END;
+/ 
+
+--8.
+--Definiti o functie stocata care determina numarul de clienti care au colaborat cu
+--agentul de vanzare al carui nume este introdus de la tastatura. Afisati si numele
+--clientilor.
+
+CREATE OR REPLACE FUNCTION f_ex8
+   (nume_agent angajat.nume%TYPE)
+   RETURN NUMBER IS
+     nr_clienti NUMBER;
+     TYPE tablou_imbricat IS TABLE OF client%ROWTYPE;
+     info_clienti tablou_imbricat;
+     exc_clienti EXCEPTION;
+     BEGIN
+         SELECT COUNT(id_client) --calculam nr de clienti 
+         INTO nr_clienti
+         FROM angajat ang, obtine ob
+         WHERE ang.id_angajat = ob.id_angajat(+) AND UPPER(nume) = UPPER(nume_agent)
+                AND UPPER(tip_angajat) = UPPER('agent de vanzare')
+         GROUP BY ang.id_angajat; --grupam dupa id-ul angajatului
+         IF nr_clienti = 0 THEN --daca agentul nu are clienti
+              RAISE exc_clienti;
+         END IF;
+         DBMS_OUTPUT.PUT_LINE('Agentul de vanzare ' || nume_agent || ' a colaborat cu:');
+         --retinem informatiile despre clientii care au apelat la agent intr-un tablou imbricat
+         SELECT c.id_client, c.nume, c.prenume, c. CNP, c.telefon, c.adresa_email
+         BULK COLLECT INTO info_clienti
+         FROM angajat ang, obtine ob, client c --join pe 3 tabele diferite
+         WHERE ang.id_angajat = ob.id_angajat AND c.id_client = ob.id_client
+              AND UPPER(ang.nume) = UPPER(nume_agent)
+              AND UPPER(tip_angajat) = UPPER('agent de vanzare'); --conditiile de join si 
+               --si conditia pentru a prelua doar informatiile referitoare la angajatul dorit
+         --afisam clientii
+         FOR i in info_clienti.FIRST..info_clienti.last LOOP
+             DBMS_OUTPUT.PUT_LINE(i || '. ' || info_clienti(i).nume || ' ' || info_clienti(i).prenume);
+         END LOOP;
+         RETURN nr_clienti; -- returnam rezultatul
+         EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+               RAISE_APPLICATION_ERROR(-20000, 'Nu exista agentul de vanzare');
+            WHEN TOO_MANY_ROWS THEN
+               RAISE_APPLICATION_ERROR(-20001, 'Exista mai multi agenti cu acelasi nume');
+            WHEN exc_clienti THEN
+               RAISE_APPLICATION_ERROR(-20002, 'Agentul nu a avut clienti.');
+END f_ex8;
+/
+
+DECLARE
+    v_nume angajat.nume%TYPE := Initcap('&p_nume');
+    nr_clienti NUMBER := f_ex8(v_nume);
+BEGIN
+    IF nr_clienti = 1 THEN
+       DBMS_OUTPUT.PUT_LINE('Agentul ' || v_nume || ' a coloborat cu un client.');
+    ELSE
+       DBMS_OUTPUT.PUT_LINE('Agentul ' || v_nume || ' a coloborat cu '|| nr_clienti || ' clienti.');
+    END IF;
+END;
+/
+
+DECLARE
+    nr_clienti NUMBER;
+BEGIN
+    nr_clienti := f_ex8('Adriana');
+END;
+/
+
+--9.
+--Afisati pentru un client introdus de la tastatura firmele si tipurile de transport ale 
+--ofertelor achizitionate.
+
+CREATE OR REPLACE PROCEDURE p_ex9 
+    (nume_client client.nume%TYPE)
+    IS
+      --am luat un cursor pentru oferte
+      CURSOR cursor_oferta IS 
+                SELECT o.id_oferta, tip_oferta,mijloc_de_transport, denumire_firma
+                FROM client c , oferta o ,obtine ob, transport t,firma f
+                WHERE c.id_client = ob.id_client AND o.id_oferta = ob.id_oferta
+                     AND t.id_transport = o.id_transport AND f.id_firma = t.id_firma
+                     AND UPPER(nume) = UPPER(nume_client);
+      nr_oferte NUMBER(2);
+      prenume_client client.prenume%TYPE;
+      exc_oferte EXCEPTION;
+      BEGIN
+          --am retinut in variabile prenumele clientului si nr de oferte achizitionate
+          SELECT prenume, NVL((SELECT COUNT(o.id_oferta)
+                      FROM client c , oferta o ,obtine ob, transport t,firma f
+                      WHERE c.id_client = ob.id_client AND o.id_oferta = ob.id_oferta
+                         AND t.id_transport = o.id_transport AND f.id_firma = t.id_firma
+                         AND UPPER(c.nume) = UPPER(nume_client)
+                      GROUP BY nume), 0)
+          INTO prenume_client, nr_oferte
+          FROM client
+          WHERE UPPER(nume) = UPPER(nume_client);
+          IF nr_oferte = 0 THEN --daca clientul nu a achizitionat nicio oferta
+              RAISE exc_oferte;
+          ELSIF nr_oferte = 1 THEN --daca clientul a achizitionat doar o oferta
+                DBMS_OUTPUT.PUT_LINE('Clientul ' || nume_client || ' ' || prenume_client || ' a achizitionat o singura oferta care include transport:');
+          ELSE 
+               DBMS_OUTPUT.PUT_LINE('Clientul ' || nume_client || ' ' || prenume_client || ' a achizitionat ' || nr_oferte || ' oferte care includ transport:');
+          END IF;
+          --afisam ofertele
+          FOR i IN cursor_oferta LOOP
+               DBMS_OUTPUT.PUT_LINE('-> Oferta ' || i.id_oferta || ' -> este de tip ' || i.tip_oferta);
+               DBMS_OUTPUT.PUT_LINE('              -> s-a ajuns la destinatie cu ' || i.mijloc_de_transport);
+               DBMS_OUTPUT.PUT_LINE('              -> firma care s-a ocupat de transport este: ' || i.denumire_firma);
+               DBMS_OUTPUT.PUT_LINE('-------------------------------------------------------------------------------');
+          END LOOP;
+          EXCEPTION --tratam exceptii
+             WHEN NO_DATA_FOUND THEN
+                   RAISE_APPLICATION_ERROR(-20000, 'Nu exista clientul.');
+             WHEN TOO_MANY_ROWS THEN
+                   RAISE_APPLICATION_ERROR(-20001, 'Exista mai multi clienti cu acelasi nume.');
+             WHEN exc_oferte THEN
+                   RAISE_APPLICATION_ERROR(-20002, 'Clientul nu a achizitionat oferte care includ transport sau de niciun fel');
+END p_ex9;
+/
+
+DECLARE
+    v_nume client.nume%TYPE := Initcap('&p_nume');
+BEGIN
+    p_ex9(v_nume);
+END;
+/
+
+--10.
+--Sa se scrie un trigger TRIG_EX10, care sa permita lucrul asupra tabelului
+--contract_angajat doar in zilele lucratoare si intre orele 9-20.
+
+CREATE OR REPLACE TRIGGER trig_ex10
+BEFORE INSERT OR DELETE OR UPDATE on contract_angajat
+BEGIN
+  --conditia pentru permisiuni
+  IF (TO_CHAR(SYSDATE,'D') <= 1 AND TO_CHAR(SYSDATE,'D') >6)  
+     OR (TO_CHAR(SYSDATE,'HH24') NOT BETWEEN 9 AND 20) THEN
+     --am luat pe cazuri(in caz de inserare,stergere sau actualizare)
+    IF INSERTING THEN
+       RAISE_APPLICATION_ERROR(-20001,'Inserarea in tabel se poate face doar in cursul zilelor
+             lucratoare si in intervalul 9-20');
+    ELSIF DELETING THEN
+       RAISE_APPLICATION_ERROR(-20002,'Stergerea din tabel se poate face doar in cursul zilelor
+             lucratoare si in intervalul 9-20');
+    ELSE
+       RAISE_APPLICATION_ERROR(-20003,'Actualizarea tabelului se poate face doar in cursul zilelor
+             lucratoare si in intervalul 9-20');
+    END IF;
+  END IF;
+END;
+/
+drop trigger trig_ex10;
+
+update contract_angajat
+set experienta = 3
+where id_contract = 7;
+
+select *
+from contract_angajat
+where id_contract = 7;
+
+--11.
+--Sa se scrie un trigger TRIG_EX11, care sa nu permita marirea comisionului 
+--angajatilor care nu au cel putin 10 ani de experienta.
+
+CREATE OR REPLACE TRIGGER trig_ex11
+BEFORE UPDATE OF comision ON angajat
+FOR EACH ROW
+DECLARE
+   experienta_angajat contract_angajat.experienta%TYPE;
+BEGIN
+   SELECT experienta
+   INTO experienta_angajat
+   FROM contract_angajat
+   WHERE id_angajat IN (:NEW.id_angajat, :OLD.id_angajat);
+   IF experienta_angajat < 10 AND :NEW.comision > NVL(:OLD.comision,0)  THEN
+      RAISE_APPLICATION_ERROR(-20001, 'Nu puteti mari comisionul.Angajatul are mai putin de 10 ani de experienta.');
+   END IF;
+END;
+/
+
+drop trigger trig_ex11;
+
+update angajat
+set comision = 2
+where id_angajat = 20;
+
+update angajat
+set comision = 6
+where id_angajat = 30;
+
+select ang.id_angajat, comision,experienta
+from angajat ang, contract_angajat c
+where ang.id_angajat = c.id_angajat;
+
+--12.
+--Definiti un trigger TRIG_EX12 care sa introduca date in tabelul DETALII dupa ce 
+--utilizatorul a folosit o comanda LDD.
+
+--am creat tabelul detalii
+CREATE TABLE detalii
+   (nume_baza_date VARCHAR2(30),
+    nume_user VARCHAR2(30),
+    tip_eveniment VARCHAR2(30),
+    data_eveniment DATE);
+    
+CREATE OR REPLACE TRIGGER trig_ex12
+  AFTER CREATE OR DROP OR ALTER ON SCHEMA
+BEGIN
+  --am inserat in tabel informatiile necesare
+  INSERT INTO detalii
+  VALUES(SYS.DATABASE_NAME, SYS.LOGIN_USER, SYS.SYSEVENT, SYSDATE);
+END;
+/
+SELECT *
+FROM detalii;
+
+DROP TRIGGER trig_ex12;
+
+DROP TABLE detalii;
+
+CREATE TABLE persoane (nume VARCHAR2(20),
+                    prenume VARCHAR2(20));
+DROP TABLE persoane;
+
+--13.
+CREATE OR REPLACE PACKAGE pachet_ex13 AS
+    PROCEDURE p_ex6 (v_nume client.nume%TYPE);
+    PROCEDURE p_ex7 (luna NUMBER);
+    FUNCTION f_ex8 (nume_agent angajat.nume%TYPE) RETURN NUMBER;
+    PROCEDURE p_ex9 (nume_client client.nume%TYPE);
+END pachet_ex13;
+/
+
+CREATE OR REPLACE PACKAGE BODY pachet_ex13 AS
+    PROCEDURE p_ex6 (v_nume client.nume%TYPE) IS 
+          nr_oferte NUMBER;
+          nr_fac NUMBER;
+          cod_client client.id_client%TYPE;
+          TYPE tablou_imbricat IS TABLE OF obtine%ROWTYPE;
+          info_of tablou_imbricat;
+          TYPE tablou_indexat IS TABLE OF facilitati%ROWTYPE 
+                          INDEX BY BINARY_INTEGER;
+          fac_camera tablou_indexat;
+          exc_oferte EXCEPTION;
+          exc_fac EXCEPTION;
+        BEGIN
+          --pentru a intra pe exceptia de no_data_found trebuie sa verificam
+          --daca numele exista in tabel, daca nu faceam acest select se facea 
+          --confuzie intre clientii care nu exista si clientii care nu au achizitionat 
+          --oferte(nu intra niciodata pe no_data_found, ci intra pe exc_oferte)
+          SELECT id_client
+          INTO cod_client
+          FROM client
+          WHERE UPPER(nume) = UPPER(v_nume);
+          --retinem detaliile despre oferte 
+          SELECT o.id_client,o.id_angajat,o.id_oferta,o.id_camera, data_start, data_end
+          BULK COLLECT INTO info_of
+          FROM client c, obtine o
+          WHERE UPPER(c.nume) = UPPER(v_nume) and o.id_client = c.id_client;
+          nr_oferte := info_of.COUNT;
+          IF nr_oferte = 0 THEN --daca clientul nu a achizitionat nicio oferta
+               RAISE exc_oferte;
+          ELSIF nr_oferte = 1 THEN --daca clientul a achizionat doar o oferta
+              DBMS_OUTPUT.PUT_LINE('Clientul ' || v_nume || ' a achizitionat o oferta.');
+              DBMS_OUTPUT.PUT_LINE('Oferta achizitionata este:');
+          ELSE
+              DBMS_OUTPUT.PUT_LINE('Clientul ' || v_nume || ' a achizitionat ' || nr_oferte || ' oferte.');
+              DBMS_OUTPUT.PUT_LINE('Ofertele achizitionate sunt:');
+          END IF;
+          --parcurgem fiecare oferta
+          FOR i IN info_of.FIRST..info_of.LAST LOOP
+             --afisam detaliile despre oferta
+             DBMS_OUTPUT.PUT_LINE(i || '. Oferta ' || info_of(i).id_oferta || ' -> incepe pe data de ' || info_of(i).data_start);
+             DBMS_OUTPUT.PUT_LINE('              -> se termina pe data de ' || info_of(i).data_end);
+             DBMS_OUTPUT.PUT_LINE('              -> este rezervata pe camera ' || info_of(i).id_camera);
+             --retinem facilitatile camerei
+             SELECT f.id_facilitate,denumire
+             BULK COLLECT INTO fac_camera
+             FROM obtine o, contine_fac cf, facilitati f
+             WHERE id_oferta = info_of(i).id_oferta and o.id_camera = cf.id_camera and cf.id_facilitate = f.id_facilitate;
+             nr_fac := fac_camera.COUNT;
+             IF nr_fac = 0 THEN --in cazul in care camera nu are facilitati
+                RAISE exc_fac;
+             ELSIF nr_fac = 1 THEN --in cazul in care camera are doar o facilitate
+                DBMS_OUTPUT.PUT_LINE('Camera ' || info_of(i).id_camera || ' are o singura facilitate:');
+             ELSE
+                DBMS_OUTPUT.PUT_LINE('Camera ' || info_of(i).id_camera || ' are ' || nr_fac || ' facilitati:');
+             END IF;
+             --afisam facilitatile camerei
+             FOR j in fac_camera.FIRST..fac_camera.last LOOP
+                 DBMS_OUTPUT.PUT_LINE('-> ' || fac_camera(j).denumire);
+             END LOOP;
+             DBMS_OUTPUT.NEW_LINE;
+         END LOOP;
+         EXCEPTION --tratam exceptii
+             WHEN NO_DATA_FOUND THEN
+                   RAISE_APPLICATION_ERROR(-20000, 'Nu exista clientul.');
+             WHEN TOO_MANY_ROWS THEN
+                   RAISE_APPLICATION_ERROR(-20001, 'Exista mai multi clienti cu acelasi nume.');
+             WHEN exc_oferte THEN
+                   RAISE_APPLICATION_ERROR(-20002, 'Clientul nu a achizitionat nicio oferta.');
+             WHEN exc_fac THEN
+                   RAISE_APPLICATION_ERROR(-20003, 'Camera nu are facilitati.');
+    END p_ex6;
+    
+    PROCEDURE p_ex7 (luna NUMBER) IS
+            --am luat un cursor pentru destinatii
+            --daca nu faceam cu UNION nu lua destinatiile care nu au avut nicio oferta
+            --in luna introdusa de la tastatura 
+            CURSOR cursor_destinatie IS
+                SELECT d.id_destinatie, MAX(oras),COUNT(o.id_oferta)
+                FROM destinatie d, oferta o, obtine ob
+                WHERE d.id_destinatie = o.id_destinatie AND TO_CHAR(data_start, 'MM') = luna
+                         AND o.id_oferta = ob.id_oferta
+                GROUP BY d.id_destinatie
+                UNION
+                SELECT id_destinatie,oras,0
+                FROM destinatie
+                WHERE id_destinatie NOT IN (SELECT d.id_destinatie
+                                            FROM destinatie d, oferta o, obtine ob
+                                            WHERE d.id_destinatie = o.id_destinatie 
+                                                  AND TO_CHAR(data_start, 'MM') = luna
+                                                  AND o.id_oferta = ob.id_oferta);
+            --am luat un cursor pentru oferte
+            CURSOR cursor_oferta IS
+                SELECT o.id_oferta, pret, id_destinatie
+                FROM obtine o, oferta oft
+                WHERE TO_CHAR(data_start, 'MM') = luna AND o.id_oferta = oft.id_oferta
+                ORDER BY pret DESC;
+            cod_dest destinatie.id_destinatie%TYPE;
+            nume_dest destinatie.oras%TYPE;
+            nr_oferte NUMBER(5);
+            nr_oferte_total NUMBER(5);
+            cod_oferta oferta.id_oferta%TYPE;
+            pret_of oferta.pret%TYPE;
+            cod_destinatie oferta.id_destinatie%TYPE;
+            top number(1) :=0; --top
+            aux number; --retinem pretul anterior
+            prima_trecere number :=1;
+            exc_luna EXCEPTION;
+            exc_no_data_found EXCEPTION;
+            BEGIN
+               --verificam daca luna introdusa poate exista
+               IF luna <= 0 OR luna > 12 THEN
+                   RAISE exc_luna;
+               END IF;
+               --calculam nr total de oferte achizitionate in luna respectiva
+               SELECT count(data_start)
+               INTO nr_oferte_total
+               FROM obtine
+               WHERE TO_CHAR(data_start, 'MM') = luna;
+               --verificam daca in tabel exista vreo oferta achizitionata in luna introdusa
+               IF nr_oferte_total = 0 THEN
+                   RAISE exc_no_data_found; 
+               ELSIF nr_oferte_total = 1 THEN --daca exista doar o oferta achizitionata
+                   DBMS_OUTPUT.PUT_LINE('In luna a-' || luna || '-a s-a achizitionat doar o oferta.');
+               ELSE
+                   DBMS_OUTPUT.PUT_LINE('In luna a-' || luna || '-a s-au achizitionat in total ' || nr_oferte_total || ' oferte.');
+               END IF;
+               OPEN cursor_destinatie; --deschidem cursorul destinatie
+               DBMS_OUTPUT.PUT_LINE('In luna a-' || luna || '-a se regasesc urmatoarele topuri:' );
+               LOOP 
+                top := 0; --topul porneste de la 0 la fiecare destinatie
+                prima_trecere := 1; --prima trecere la fiecare destinatie
+                FETCH cursor_destinatie
+                INTO cod_dest,nume_dest, nr_oferte;--incarcam linia in variabilele mentionate
+                EXIT WHEN cursor_destinatie%NOTFOUND; --iesim cand nu mai avem date
+                DBMS_OUTPUT.PUT_LINE('Destinatia: ' || nume_dest);
+                IF nr_oferte=0 THEN --daca nr de oferte este 0 pt destinatia respectiva
+                     DBMS_OUTPUT.PUT_LINE('Nimeni nu a plecat in aceasta destinatie in luna a-' || luna || '-a.');
+                ELSE
+                    OPEN cursor_oferta; --deschidem cursorul cursor_oferta
+                    LOOP
+                        FETCH cursor_oferta
+                        INTO cod_oferta, pret_of,cod_destinatie; --incarcam linia in variabilele mentionate
+                        EXIT WHEN cursor_oferta%NOTFOUND OR top = 3; --iesim cand nu avem date sau
+                                        -- cand ajungem la top 3
+                        IF cod_dest = cod_destinatie THEN 
+                           IF prima_trecere = 1 THEN --daca suntem la prima trecere
+                              aux := pret_of;  --retinem pretul curent
+                           END IF;
+                           IF aux <> pret_of OR prima_trecere = 1 THEN --daca suntem la prima trecere sau
+                                                          --daca pretul anterior si pretul curent sunt diferite
+                                  DBMS_OUTPUT.PUT_LINE('Top ' || (top+1));
+                                  top := top + 1; --crestem in top
+                                  aux := pret_of; --retinem pretul curent
+                           END IF;
+                           prima_trecere := prima_trecere +1;
+                           DBMS_OUTPUT.PUT_LINE('-> oferta: ' || cod_oferta || ' la pretul: ' || pret_of);
+                        END IF;
+                    END LOOP;
+                    CLOSE cursor_oferta; --inchidem cursorul cursor_oferta
+                END IF;
+                DBMS_OUTPUT.NEW_LINE;
+                END LOOP;
+                CLOSE cursor_destinatie; --inchidem cursorul cursor_destinatie;
+                EXCEPTION --tratam exceptii
+                     WHEN exc_no_data_found THEN
+                           RAISE_APPLICATION_ERROR(-20000, 'Nu s-au achizitionat oferte in luna respectiva.');
+                     WHEN exc_luna THEN
+                           RAISE_APPLICATION_ERROR(-20001,'Un an are 12 luni.Incercati din nou, introducand un numar intre 1 si 12.');
+    END p_ex7;
+    
+    FUNCTION f_ex8 (nume_agent angajat.nume%TYPE) RETURN NUMBER IS
+         nr_clienti NUMBER;
+         TYPE tablou_imbricat IS TABLE OF client%ROWTYPE;
+         info_clienti tablou_imbricat;
+         exc_clienti EXCEPTION;
+         BEGIN
+             SELECT COUNT(id_client) --calculam nr de clienti 
+             INTO nr_clienti
+             FROM angajat ang, obtine ob
+             WHERE ang.id_angajat = ob.id_angajat(+) AND UPPER(nume) = UPPER(nume_agent)
+                    AND UPPER(tip_angajat) = UPPER('agent de vanzare')
+             GROUP BY ang.id_angajat; --grupam dupa id-ul angajatului
+             IF nr_clienti = 0 THEN --daca agentul nu are clienti
+                  RAISE exc_clienti;
+             END IF;
+             DBMS_OUTPUT.PUT_LINE('Agentul de vanzare ' || nume_agent || ' a colaborat cu:');
+             --retinem informatiile despre clientii care au apelat la agent intr-un tablou imbricat
+             SELECT c.id_client, c.nume, c.prenume, c. CNP, c.telefon, c.adresa_email
+             BULK COLLECT INTO info_clienti
+             FROM angajat ang, obtine ob, client c --join pe 3 tabele diferite
+             WHERE ang.id_angajat = ob.id_angajat AND c.id_client = ob.id_client
+                  AND UPPER(ang.nume) = UPPER(nume_agent)
+                  AND UPPER(tip_angajat) = UPPER('agent de vanzare'); --conditiile de join si 
+                   --si conditia pentru a prelua doar informatiile referitoare la angajatul dorit
+             --afisam clientii
+             FOR i in info_clienti.FIRST..info_clienti.last LOOP
+                 DBMS_OUTPUT.PUT_LINE(i || '. ' || info_clienti(i).nume || ' ' || info_clienti(i).prenume);
+             END LOOP;
+             RETURN nr_clienti; -- returnam rezultatul
+             EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                   RAISE_APPLICATION_ERROR(-20000, 'Nu exista agentul de vanzare');
+                WHEN TOO_MANY_ROWS THEN
+                   RAISE_APPLICATION_ERROR(-20001, 'Exista mai multi agenti cu acelasi nume');
+                WHEN exc_clienti THEN
+                   RAISE_APPLICATION_ERROR(-20002, 'Agentul nu a avut clienti.');
+    END f_ex8;
+
+    
+    PROCEDURE p_ex9 (nume_client client.nume%TYPE) IS
+          --am luat un cursor pentru oferte
+          CURSOR cursor_oferta IS 
+                    SELECT o.id_oferta, tip_oferta,mijloc_de_transport, denumire_firma
+                    FROM client c , oferta o ,obtine ob, transport t,firma f
+                    WHERE c.id_client = ob.id_client AND o.id_oferta = ob.id_oferta
+                         AND t.id_transport = o.id_transport AND f.id_firma = t.id_firma
+                         AND UPPER(nume) = UPPER(nume_client);
+          nr_oferte NUMBER(2);
+          prenume_client client.prenume%TYPE;
+          exc_oferte EXCEPTION;
+          BEGIN
+              --am retinut in variabile prenumele clientului si nr de oferte achizitionate
+              SELECT prenume, NVL((SELECT COUNT(o.id_oferta)
+                          FROM client c , oferta o ,obtine ob, transport t,firma f
+                          WHERE c.id_client = ob.id_client AND o.id_oferta = ob.id_oferta
+                             AND t.id_transport = o.id_transport AND f.id_firma = t.id_firma
+                             AND UPPER(c.nume) = UPPER(nume_client)
+                          GROUP BY nume), 0)
+              INTO prenume_client, nr_oferte
+              FROM client
+              WHERE UPPER(nume) = UPPER(nume_client);
+              IF nr_oferte = 0 THEN --daca clientul nu a achizitionat nicio oferta
+                  RAISE exc_oferte;
+              ELSIF nr_oferte = 1 THEN --daca clientul a achizitionat doar o oferta
+                    DBMS_OUTPUT.PUT_LINE('Clientul ' || nume_client || ' ' || prenume_client || ' a achizitionat o singura oferta care include transport:');
+              ELSE 
+                   DBMS_OUTPUT.PUT_LINE('Clientul ' || nume_client || ' ' || prenume_client || ' a achizitionat ' || nr_oferte || ' oferte care includ transport:');
+              END IF;
+              --afisam ofertele
+              FOR i IN cursor_oferta LOOP
+                   DBMS_OUTPUT.PUT_LINE('-> Oferta ' || i.id_oferta || ' -> este de tip ' || i.tip_oferta);
+                   DBMS_OUTPUT.PUT_LINE('              -> s-a ajuns la destinatie cu ' || i.mijloc_de_transport);
+                   DBMS_OUTPUT.PUT_LINE('              -> firma care s-a ocupat de transport este: ' || i.denumire_firma);
+                   DBMS_OUTPUT.PUT_LINE('-------------------------------------------------------------------------------');
+              END LOOP;
+              EXCEPTION --tratam exceptii
+                 WHEN NO_DATA_FOUND THEN
+                       RAISE_APPLICATION_ERROR(-20000, 'Nu exista clientul.');
+                 WHEN TOO_MANY_ROWS THEN
+                       RAISE_APPLICATION_ERROR(-20001, 'Exista mai multi clienti cu acelasi nume.');
+                 WHEN exc_oferte THEN
+                       RAISE_APPLICATION_ERROR(-20002, 'Clientul nu a achizitionat oferte care includ transport sau de niciun fel');
+    END p_ex9;
+END pachet_ex13;
+/
+
+BEGIN
+   pachet_ex13.p_ex6('Oprea');
+END;
+/
+
+BEGIN
+   pachet_ex13.p_ex7(5);
+END;
+/
+
+DECLARE
+    nr_clienti NUMBER := pachet_ex13.f_ex8('Bucur');
+BEGIN
+    IF nr_clienti = 1 THEN
+       DBMS_OUTPUT.PUT_LINE('Agentul a coloborat cu un client.');
+    ELSE
+       DBMS_OUTPUT.PUT_LINE('Agentul a coloborat cu '|| nr_clienti || ' clienti.');
+    END IF;
+END;
+/
+
+BEGIN
+   pachet_ex13.p_ex9('Modrescu');
+END;
+/
+
+--14.
+--Definiti un pachet care sa permita adaugarea unui client nou care face o rezervare noua
+--si se vor afisa detaliile rezervarii(tip,hotel,camera,agent,facilitati).
+--Pachetul va contine o procedura(are ca parametrii detaliile despre client si rezervare)
+--care va permite adaugarea unui client si adaugarea unei noi rezervari,
+--rezervare care se face prin intermediul altei proceduri(are ca parametrii detalii despre rezervare).
+--Folositi functii pentru a prelua detaliile despre rezervare(tipul,hotelul,agentul,pretul).
+
+CREATE OR REPLACE PACKAGE pachet_ex14 AS
+    FUNCTION get_tip_oferta (cod_oferta obtine.id_oferta%TYPE) RETURN VARCHAR2;
+    FUNCTION get_pret_oferta (cod_oferta obtine.id_oferta%TYPE) RETURN NUMBER;
+    FUNCTION get_nume_hotel (cod_camera obtine.id_camera%TYPE) RETURN VARCHAR2;
+    FUNCTION get_nume_agent (cod_agent obtine.id_angajat%TYPE) RETURN VARCHAR2;
+    PROCEDURE adaugare_rezervare
+         (cod_client obtine.id_client%TYPE,
+          cod_angajat obtine.id_angajat%TYPE,
+          cod_oferta obtine.id_oferta%TYPE,
+          cod_camera obtine.id_camera%TYPE,
+          data_venirii obtine.data_start%TYPE,
+          data_plecarii obtine.data_end%TYPE);
+    PROCEDURE adaugare_client
+         (cod_client client.id_client%TYPE,
+          nume_client client.nume%TYPE,
+          prenume_client client.prenume%TYPE,
+          CNP_client client.CNP%TYPE,
+          nr_telefon client.telefon%TYPE,
+          email client.adresa_email%TYPE,
+          cod_angajat obtine.id_angajat%TYPE,
+          cod_oferta obtine.id_oferta%TYPE,
+          cod_camera obtine.id_camera%TYPE,
+          data_venirii obtine.data_start%TYPE,
+          data_plecarii obtine.data_end%TYPE);
+END pachet_ex14;
+/
+
+CREATE OR REPLACE PACKAGE BODY pachet_ex14 AS
+    FUNCTION get_tip_oferta (cod_oferta obtine.id_oferta%TYPE) 
+    RETURN VARCHAR2 IS
+       tip_oft oferta.tip_oferta%TYPE;
+       BEGIN
+         --retinem tipul ofertei
+         SELECT tip_oferta
+         INTO tip_oft 
+         FROM oferta
+         WHERE id_oferta = cod_oferta;
+         RETURN tip_oft;
+       EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+              RAISE_APPLICATION_ERROR(-20000, 'Nu exista oferta.');
+    END get_tip_oferta;
+    
+    FUNCTION get_pret_oferta (cod_oferta obtine.id_oferta%TYPE) 
+    RETURN NUMBER IS
+       pret_oft oferta.pret%TYPE;
+       BEGIN
+          --retinem pretul ofertei
+          SELECT pret 
+          INTO pret_oft
+          FROM oferta
+          WHERE id_oferta = cod_oferta;
+          RETURN pret_oft;
+       EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+              RAISE_APPLICATION_ERROR(-20000, 'Nu exista oferta.');
+    END get_pret_oferta;
+    
+    FUNCTION get_nume_hotel (cod_camera obtine.id_camera%TYPE) 
+    RETURN VARCHAR2 IS
+        hotel_nume hotel.nume_hotel%TYPE;
+        BEGIN
+            --retinem hotelul unde s-a facut rezervarea
+            SELECT nume_hotel
+            INTO hotel_nume
+            FROM hotel h, camera c
+            WHERE id_camera = cod_camera AND c.id_hotel = h.id_hotel;
+            RETURN hotel_nume;
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+              RAISE_APPLICATION_ERROR(-20001, 'Nu exista camera.');
+    END get_nume_hotel;
+    
+    FUNCTION get_nume_agent (cod_agent obtine.id_angajat%TYPE) 
+    RETURN VARCHAR2 IS
+          nume_agent angajat.nume%TYPE;
+          BEGIN
+              --retinem numele agentului
+              SELECT nume
+              INTO nume_agent
+              FROM angajat
+              WHERE id_angajat = cod_agent;
+              RETURN nume_agent;
+          EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+              RAISE_APPLICATION_ERROR(-20003, 'Nu exista agentul de vanzare.');
+    END get_nume_agent;
+    
+    PROCEDURE adaugare_rezervare
+         (cod_client obtine.id_client%TYPE,
+          cod_angajat obtine.id_angajat%TYPE,
+          cod_oferta obtine.id_oferta%TYPE,
+          cod_camera obtine.id_camera%TYPE,
+          data_venirii obtine.data_start%TYPE,
+          data_plecarii obtine.data_end%TYPE) IS
+          tip_oft oferta.tip_oferta%TYPE;
+          pret_oft oferta.pret%TYPE;
+          nume_agent angajat.nume%TYPE;
+          hotel_nume hotel.nume_hotel%TYPE;
+          nr_fac NUMBER(5);
+          TYPE tablou_indexat IS TABLE OF facilitati.denumire%TYPE INDEX BY BINARY_INTEGER;
+          fac_camera tablou_indexat;
+          BEGIN
+            tip_oft := get_tip_oferta(cod_oferta);
+            pret_oft := get_pret_oferta(cod_oferta);
+            hotel_nume := get_nume_hotel(cod_camera);
+            nume_agent := get_nume_agent(cod_angajat);
+            --inseram in tabel rezervarea
+            INSERT INTO obtine
+            VALUES(cod_client, cod_angajat, cod_oferta,cod_camera, data_venirii, data_plecarii);
+            --ne ocupam de afisarea detaliilor despre rezervare
+            DBMS_OUTPUT.PUT_LINE('Detalii rezervare:');
+            DBMS_OUTPUT.PUT_LINE('Oferta ' || cod_oferta || ':');
+            DBMS_OUTPUT.PUT_LINE('-> tip: ' || tip_oft); 
+            DBMS_OUTPUT.PUT_LINE('-> pret: ' || pret_oft);
+            DBMS_OUTPUT.PUT_LINE('-> nr. camera: ' || cod_camera);
+            DBMS_OUTPUT.PUT_LINE('-> hotel: ' || hotel_nume);
+            DBMS_OUTPUT.PUT_LINE('-> agent de vanzare: ' || nume_agent);
+            --retinem facilitatile camereo
+            SELECT denumire
+            BULK COLLECT INTO fac_camera
+            FROM facilitati f, contine_fac cf
+            WHERE f.id_facilitate = cf.id_facilitate AND id_camera = cod_camera;
+            nr_fac := fac_camera.COUNT;
+            IF nr_fac = 0 THEN --in cazul in care camera nu are facilitati
+                DBMS_OUTPUT.PUT_LINE('Camera ' || cod_camera || ' nu are facilitati.');
+            ELSIF nr_fac = 1 THEN
+                DBMS_OUTPUT.PUT_LINE('Camera ' || cod_camera || ' are o singura facilitate:');
+            ELSE
+                DBMS_OUTPUT.PUT_LINE('Camera ' || cod_camera || ' are ' || nr_fac || ' facilitati:');
+            END IF;
+            --afisam facilitatile camerei
+            FOR i in fac_camera.FIRST..fac_camera.last LOOP
+                 DBMS_OUTPUT.PUT_LINE('-> ' || fac_camera(i));
+            END LOOP;
+    END adaugare_rezervare;
+    PROCEDURE adaugare_client
+         (cod_client client.id_client%TYPE,
+          nume_client client.nume%TYPE,
+          prenume_client client.prenume%TYPE,
+          CNP_client client.CNP%TYPE,
+          nr_telefon client.telefon%TYPE,
+          email client.adresa_email%TYPE,
+          cod_angajat obtine.id_angajat%TYPE,
+          cod_oferta obtine.id_oferta%TYPE,
+          cod_camera obtine.id_camera%TYPE,
+          data_venirii obtine.data_start%TYPE,
+          data_plecarii obtine.data_end%TYPE) IS
+          TYPE tablou_imbricat IS TABLE OF client%ROWTYPE;
+          istoric_camera tablou_imbricat;
+          nr_clienti NUMBER(5); -- nr de clienti rezervati pana in prezent in camera respectiva
+          BEGIN
+            --retinem intai istoricul camerei rezervate 
+            --pentru a evita sa apara si numele clientului actual
+            SELECT c.id_client,nume, prenume,CNP,telefon,adresa_email
+            BULK COLLECT INTO istoric_camera
+            FROM obtine ob, client c
+            WHERE c.id_client = ob.id_client 
+                  AND id_camera = cod_camera 
+                  AND data_start < data_venirii;
+            --inseram datele clientului in tabel
+            INSERT INTO client
+            VALUES(cod_client,nume_client,prenume_client,CNP_client,nr_telefon,email);
+            --facem rezervarea clientului
+            adaugare_rezervare(cod_client,cod_angajat,cod_oferta,cod_camera,data_venirii,data_plecarii);
+            --ne ocupam sa afisam istoricul camerei rezervate
+            nr_clienti := istoric_camera.COUNT;
+            IF nr_clienti = 0 THEN
+               DBMS_OUTPUT.PUT_LINE('Camera nu a mai fost rezervata in trecut');
+            ELSE
+               DBMS_OUTPUT.PUT_LINE('Istoric camera:');
+               FOR i in istoric_camera.FIRST..istoric_camera.last LOOP
+                 DBMS_OUTPUT.PUT_LINE('-> ' || istoric_camera(i).id_client || ' ' 
+                         || istoric_camera(i).nume || ' ' || istoric_camera(i).prenume);
+               END LOOP;
+            END IF;
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+              RAISE_APPLICATION_ERROR(-20000, 'Nu exista camera.');
+    END adaugare_client;
+END pachet_ex14;
+/
+
+BEGIN
+    pachet_ex14.adaugare_client(112,'Albu','Vlad', '1234567891012','0742858541','albu.vlad@yahoo.com',60,100,221,to_date('20-07-2020','dd-mm-yyyy'),to_date('27-07-2020','dd-mm-yyyy'));
+END;
+/
+
+BEGIN
+    pachet_ex14.adaugare_client(112,'Albu','Vlad', '1234567891012','0742858541','albu.vlad@yahoo.com',60,100,201,to_date('20-07-2020','dd-mm-yyyy'),to_date('27-07-2020','dd-mm-yyyy'));
+END;
+/
+
+BEGIN
+    pachet_ex14.adaugare_client(113,'Albu','Vlad', '1234567891012','0742858541','albu.vlad@yahoo.com',100,100,201,to_date('20-07-2020','dd-mm-yyyy'),to_date('27-07-2020','dd-mm-yyyy'));
+END;
+/
+
+BEGIN
+    pachet_ex14.adaugare_client(114,'Popa','Iuliana', '1234528910122','0742885541','popa.iuliana@yahoo.com',60,1400,201,to_date('20-07-2020','dd-mm-yyyy'),to_date('27-07-2020','dd-mm-yyyy'));
+END;
+/
+
+DECLARE
+   tip_oft oferta.tip_oferta%TYPE;
+BEGIN
+    tip_oft := pachet_ex14.get_tip_oferta(1500);
+END;
+/
+
