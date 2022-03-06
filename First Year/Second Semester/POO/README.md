@@ -1,6 +1,6 @@
 ## Proiectul 1
 
-**Tema 7. Clasa "Lista_dublu_inlantuita"**
+**Tema 7 : Clasa "Lista_dublu_inlantuita"**
 
 Se consideră **Class Nod{ int info; Nod* prev, next;}*
 - constructori de inițializare și parametrizati pentru clasa Nod;
@@ -17,7 +17,7 @@ rezultând într-o nouă listă dublu înlănțuită.
 
 ## Proiectul 2
 
-**Tema 7.**
+**Tema 7**
 
 Se dau clasele:
 -Locuință (string numeClient, int suprafataUtila, float discount)
