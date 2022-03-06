@@ -7,7 +7,7 @@ Se consideră **Class Nod{ int info; Nod* prev, next;}*
 - destructor pentru clasa Nod;
 
 Clasa Lista_dublu_inlantuita are:
-- doi membri privați Nod*” reprezentând primul și ultimul element;
+- doi membri privați "Nod*" reprezentând primul și ultimul element;
 - metoda publică de adăugare a unui element pe o poziție;
 - supraîncărcarea operatorului >>, realizată prin utilizarea succesivă a metodei declarată anterior;
 - supraîncărcarea operatorului << pentru afișarea listei în ambele sensuri, în aceeasi funcție;
@@ -38,14 +38,15 @@ afișarea lor.
 **Tema 11**
 
 A) Să se proiecteze și implementeze obiectual o aplicație de gestiune a resurselor umane pentru un grup de **Companii**. Gestionarea se va realiza prin intermediul unui gestionar numit **HRManager**. Se vor avea în vedere următoarele caracteristici :
-- Companiile dețin o serie de departamente de lucru (ex: “derulare proiecte”, “financiar”, “IT”, ...) 
+- Companiile dețin o serie de departamente de lucru (ex: "derulare proiecte", "financiar", "IT", ...) 
 - Companiile au o serie de angajați, distribuiți pe departamente, unii dintre aceștia având funcția de manageri pentru alți angajați. Fiecare angajat poate avea cel mult un manager. 
 - Aplicația trebuie să poată gestiona pe lângă numele angajaților și informații cum ar fi data de angajare în companie și salariul lunar brut al fiecărui angajat. 
 - Se vor realiza interfețe prin care să se poată adăuga/șterge departamente sau angajați din companie precum și companii din gestionarul de companii. 
 - Aplicația trebuie să poată furniza următoarele rapoarte:
               - Numărul de angajați ai unui companie/departament dat 
               - Cheltuielile salariale lunare totale existente la nivelul unei companii 
-              - Numele, data de angajare și salariul angajaților care au funcția de manageri precum                 și lista de angajați care le sunt subordonați, la nivelul unei companii 
+              - Numele, data de angajare și salariul angajaților care au funcția de manageri precum
+                și lista de angajați care le sunt subordonați, la nivelul unei companii 
               - Lista departamentelor care au minim n angajați (n transmis că parametru). 
 - Trebuie să existe posibilitatea de fuzionare a două companii (se va defini un operator + care realizează acest lucru, precum și o metodă la nivelul gestionarului). Departamentele comune vor fuziona într-unul singur. La fuzionare toți managerii își păstrează funcția. 
 - La adăugarea unei companii în gestionar trebuie să se verifice dacă acea companie nu există deja acolo. O companie este identică cu altă dacă are același nume și aceeași schemă de deparatamente și angajați. 
