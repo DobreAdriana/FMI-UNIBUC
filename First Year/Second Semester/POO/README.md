@@ -54,4 +54,6 @@ B) Pornind de la modelul proiectat mai sus, să se adauge posibilitatea de lucru
 
 C) Toate problemele și situațiile deosebite se vor trata prin intermediul mecanismului de excepții. Exemple de probleme: încercarea de adăugare a unei companii în gestionar, în condițiile în care ea deja există acolo, încercarea de ștergere a unei entități (companie, departament, angajat) care nu există, alocări nereușite de memorie, etc. Obs: se vor folosi cât se poate de mult mecanismele ce țin de tehnicile de programare obiectuală : incapsularea, derivarea și polimorfismul bazat pe supraincarare de operatori și funcții virtuale
 
+### Limbaj folosit
+- C++
 
