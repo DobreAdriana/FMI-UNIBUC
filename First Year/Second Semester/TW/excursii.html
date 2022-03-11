@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Excursii</title>
+    <link rel="stylesheet" type="text/css" href="excursii.css">
+    <script src = "excursii.js"></script>
+</head>
+<body>
+<form id = "quiz" name = "quiz">
+    <div class="joc">
+        <div class="intrebare">Va rugam sa completati urmatorul formular!</div>
+    </div>
+        <p class = "questions">Nume</p>
+        <input id = "textbox" type = "text" name = "question1">
+
+        <p class = "questions">Ati folosit serviciile noastre?</p>
+        <input type = "radio" id = "1 name = "question2" value = "Da"> Da<br>
+        <input type = "radio" id = "2" name = "question2" value = "Nu"> Nu<br>
+
+        <p class = "questions">Ce parere aveti despre serviciile noastre?</p>
+
+        <input type = "radio" id = "3" name = "question3" value = "*"> *<br>
+        <input type = "radio" id = "4" name = "question3" value = "**"> **<br>
+        <input type = "radio" id = "5" name = "question3" value = "***"> ***<br>
+        <input type = "radio" id = "6" name = "question3" value = "*****"> ****<br>
+        <input type = "radio" id = "7" name = "question3" value = "******"> *****<br>
+
+        <p class = "questions">Aveti de gand sa mai apelati la serviciile noastre?</p>
+        <input type = "radio" id = "7" name = "question4" value = "Da"> Da<br>
+        <input type = "radio" id = "9" name = "question4" value = "Nu"> Nu<br>
+
+        <p class = "questions">Ce ati schimba?</p>
+        <input id = "checkbox" type = "text" name = "question5"><br>
+
+
+    <input id = "button" type = "button" value = "Gata!" onclick = "thankyou();">
+</form>
+    <div id = "after_submit">
+        <p id = "message"></p>
+        <img id = "picture">
+    </div>
+</body>
+</html>
+
