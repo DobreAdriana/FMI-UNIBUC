@@ -1,0 +1,207 @@
+@media screen and (min-width:600px) {
+    body{
+        padding-top: 0px;
+        background-color: palegreen;
+    }
+
+    header input, header div{display:none;}
+    header>h4>img{width:20px;
+        height:auto;
+        border-radius:10px;
+    }
+    header>h4{
+        position:fixed;
+        left:70%;
+    }
+    nav{
+        width: 100%;
+        height: 60px;
+        background-color: hsl(120, 60%, 70%);
+        position: fixed;
+        top: 60px;
+    }
+    nav ul{
+        list-style-type: none;
+    }
+    nav a{
+        text-decoration: none;
+        color: white;
+        font-size:20px;
+        display: block;
+        height:100%;
+    }
+    ul.meniu{
+        display: flex;
+        flex-direction:row;
+        flex-wrap:nowrap;
+        justify-content:space-evenly;
+    }
+    ul.meniu>li{
+        flex-grow:1;
+        height: 60px ;
+        line-height: 60px;
+        text-align: center;
+    }
+    ul.meniu>li>ul.submeniu{
+        visibility: hidden;
+    }
+    ul.meniu>li:hover>ul.submeniu{
+        visibility: visible;
+        background-color: hsl(120, 60%, 70%);
+    }
+    ul.meniu li {transition: background-color 3s;}
+
+    ul.meniu li:hover{
+        transition: background-color 3s;
+        background-color: green;
+    }
+    #info>h1>img{
+        width:80px;
+        height:auto;
+        border-radius:80px;
+    }
+    #info{
+        padding-top:80px;
+        font-size:30px;
+        color: black;
+        text-align:center;
+    }
+    #info>p{
+        font-size: 20px;
+        text-align:justify;
+        font-style:italic;
+        padding-left:10px;
+    }
+    #galerie{
+        width:70%;
+        margin:auto;
+        text-align: center;
+        padding: 10px;}
+
+    #statica>figure:nth-child(1){
+        grid-area:fig1;
+        animation-delay: 0.5s;
+    }
+    #statica>figure:nth-child(2){
+        grid-area:fig2;
+        animation-delay: 1s;
+
+    }
+    #statica>figure:nth-child(3){
+        grid-area:fig3;
+        animation-delay: 1.5s;
+
+    }
+    #statica>figure:nth-child(4){
+        grid-area:fig4;
+        animation-delay: 2s;
+
+    }
+    #statica>figure:nth-child(5){
+        grid-area:fig5;
+        animation-delay: 2.5s;
+
+    }
+    #statica>figure:nth-child(6){
+        grid-area:fig6;
+        animation-delay: 3s;
+
+    }
+    #statica {
+        display: grid;
+        grid-template-areas: "fig1 fig2 ." ". fig3 fig4" "fig5 fig6 .";
+        grid-row-gap: 5px;
+        justify-content:center;
+    }
+    #statica>figure{
+        transition: position 3s, z-index 2s, transform 3s, border 3s;
+        animation-name: opacitate;
+        animation-duration: 2.5s;
+        animation-fill-mode: both;
+    }
+    #statica>figure:hover{
+        position:relative;
+        z-index:2;
+        border: 2px solid white;
+        transform:scale(2);
+    }
+    @keyframes opacitate{
+        0% {opacity: 0;}
+        100% {opacity: 1;}
+    }
+    #container-animatie{
+        width:400px;
+        height: 250px;
+        margin: auto;
+        border: 2px solid forestgreen;
+        overflow: hidden;
+    }
+
+    #container-poze{
+        display: flex;
+        flex-flow: nowrap;
+        animation-name: slide;
+        animation-duration: 15s;
+        animation-delay:0.5s;
+        animation-direction:alternate;
+        animation-iteration-count: infinite;
+        justify-content:end;
+    }
+    @keyframes slide{
+        0% {margin-left:0px;}
+        5%{margin-left:0px;}
+
+        10% {margin-left:-400px;}
+        25%{margin-left:-400px;}
+
+        35% {margin-left:-800px;}
+        45%{margin-left:-800px;}
+
+        55% {margin-left:-1200px;}
+        65%{margin-left:-1200px;}
+
+        75% {margin-left:-1600px;}
+        85%{margin-left:-1600px;}
+
+        95% {margin-left:-2000px;}
+        100%{margin-left:-2000px;}
+    }
+    #container-croaziere-animatie{
+        width:400px;
+        height: 300px;
+        margin: auto;
+        border: 2px solid forestgreen;
+        overflow: hidden;
+    }
+
+    #container-croaziere{
+        display: flex;
+        flex-flow: nowrap;
+        animation-name: slide;
+        animation-duration: 15s;
+        animation-delay:0.5s;
+        animation-direction:alternate;
+        animation-iteration-count: infinite;
+        justify-content:end;
+    }
+    @keyframes slide{
+        0% {margin-left:0px;}
+        5%{margin-left:0px;}
+
+        10% {margin-left:-400px;}
+        25%{margin-left:-400px;}
+
+        35% {margin-left:-800px;}
+        45%{margin-left:-800px;}
+
+        55% {margin-left:-1200px;}
+        65%{margin-left:-1200px;}
+
+        75% {margin-left:-1600px;}
+        85%{margin-left:-1600px;}
+
+        95% {margin-left:-2000px;}
+        100%{margin-left:-2000px;}
+    }
+
+}

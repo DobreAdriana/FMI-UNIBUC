@@ -1,0 +1,65 @@
+
+*{margin:0;
+    padding:0;
+}
+
+html{
+    font-size:15px;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:"Times New Roman";
+    background-color:lightskyblue;
+}
+
+header{
+    padding-top:60px;
+    position:relative;
+    height:15vh;
+    text-align:center;
+}
+main{
+    height:35vh;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    font-size:25px;
+}
+.stanga{display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+    align-items:center;
+    height:20vh;
+    width:40vw;
+}
+.detalii{text-align:center;}
+.dreapta{display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+    align-items:center;
+    height:20vh;
+    width:40vw;
+}
+#nume{
+    width:200px;
+    height:50px;
+    font-size:30px;
+    font-size:30px;
+}
+#ghiceste{
+    width:100px;
+    height:50px;
+    font-size:1rem;
+    font-size:2rem;
+}
+#verifica{
+    width:100px;
+    height:50px;
+    text-align:center;
+    margin-top:10px;
+}
+#rezultat{ border-top:7px solid white;; font-size:25px; color:white;
+    margin-top:50px;}
+.afisare{text-align:center;}

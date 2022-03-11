@@ -1,0 +1,242 @@
+@media screen and (min-width:800px) {
+    body {
+        padding-top: 0px;
+        background-color: lightcyan;
+    }
+
+
+    header > h4 > img {
+        width: 20px;
+        height: auto;
+        border-radius: 10px;
+    }
+
+    header > h4 {
+        text-align: right;
+        left: 70%;
+    }
+
+    nav {
+        width: 100%;
+        height: 60px;
+        background-color: lightskyblue;
+        position: fixed;
+        top: 60px;
+        z-index:500;
+    }
+
+    nav ul {
+        list-style-type: none;
+    }
+
+    nav a {
+        text-decoration: none;
+        color: black;
+        font-size: 20px;
+        display: block;
+        height: 100%;
+    }
+
+    ul.meniu {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-evenly;
+    }
+
+    ul.meniu > li {
+        flex-grow: 1;
+        height: 60px;
+        line-height: 60px;
+        text-align: center;
+    }
+
+    ul.meniu > li > ul.submeniu {
+        visibility: hidden;
+    }
+
+    ul.meniu > li:hover > ul.submeniu {
+        visibility: visible;
+        background-color: lightskyblue;
+    }
+
+    ul.meniu li {
+        transition: background-color 3s;
+    }
+
+    ul.meniu li:hover {
+        transition: background-color 3s;
+        background-color: lightskyblue;
+    }
+
+    header > h1 > img {
+        width: 80px;
+        height: auto;
+        border-radius: 80px;
+    }
+
+    header > h1 {
+        padding-top: 50px;
+        font-size: 50px;
+        color: black;
+        text-align: center;
+        text-shadow: 4px 4px 4px darkblue;
+    }
+
+    a:link {
+        color: black;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: black;
+        background-color: transparent;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: royalblue;
+        background-color: transparent;
+        text-decoration: underline;
+    }
+
+    a:active {
+        color: royalblue;
+        background-color: transparent;
+        text-decoration: underline;
+    }
+    #info-city-break{
+        padding:0px 20px 0px 20px;
+    }
+
+    .prezentare {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #exemple-city-break>prezentare>img {
+        max-width: 100%;
+    }
+    .city {
+        flex-basis: 33,33%;
+    }
+    .prezentare>p{
+        padding:0px 20px 0px 20px;
+        text-align:justify;
+    }
+    .obiective>figcaption{
+        text-align:center;
+    }
+    #exemple-city-break{
+        padding:0px 20px 0px 20px;
+    }
+
+    .obiective {
+        float: left;
+        width: 33,33%;
+        padding:0px 22px 0px 22px;
+    }
+    .ex-obiective:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    #oferte-city-break>h3{
+        text-align:center;
+    }
+    table, th, td{border:2px solid black;
+        border-collapse: collapse;
+        padding: 10px;
+        text-align: center;
+    }
+    table {width: 80vw;
+        position:relative;
+        left:10%;
+    }
+    table tr:nth-child(odd)
+    {background:lightskyblue;
+
+    }
+    table tr:nth-child(even)
+    {
+        background:royalblue;
+        color: white;
+
+    }
+    table tr:hover{
+        background: white;
+        color: black;
+    }
+    #galerie{
+        width:70%;
+        margin:auto;
+        text-align: center;
+        padding: 10px;}
+
+    #statica>figure:nth-child(1){
+        grid-area:fig1;
+        animation-delay: 0.5s;
+    }
+    #statica>figure:nth-child(2){
+        grid-area:fig2;
+        animation-delay: 1s;
+
+    }
+    #statica>figure:nth-child(3){
+        grid-area:fig3;
+        animation-delay: 1.5s;
+
+    }
+    #statica>figure:nth-child(4){
+        grid-area:fig4;
+        animation-delay: 2s;
+
+    }
+    #statica>figure:nth-child(5){
+        grid-area:fig5;
+        animation-delay: 2.5s;
+
+    }
+    #statica>figure:nth-child(6){
+        grid-area:fig6;
+        animation-delay: 3s;
+
+    }
+    #statica {
+        display: grid;
+        grid-template-areas: "fig1 fig2 ." ". fig3 fig4" "fig5 fig6 .";
+        grid-row-gap: 5px;
+        justify-content:center;
+    }
+    #statica>figure{
+        transition: position 2s, z-index 2s, transform 3s, border 2s;
+        animation-name: opacitate;
+        animation-duration: 10s;
+        animation-fill-mode: both;
+    }
+    #statica>figure:hover{
+        position:relative;
+        z-index:2;
+        border: 2px solid white;
+        transform:scale(1.1);
+    }
+    @keyframes opacitate{
+        0% {opacity: 0;}
+        100% {opacity: 1;}
+    }
+    #contact>div>img{
+        width: 20px;
+        height: auto;
+        border-radius: 20px;
+    }
+    footer {
+        position: relative;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: lightskyblue;
+        text-align: center;
+    }
+
+}
