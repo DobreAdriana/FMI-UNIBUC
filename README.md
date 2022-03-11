@@ -5,7 +5,7 @@ You can find in this repository all the homework and projects I have done during
 I hope you find this repository useful.
 
 
-Content :
+**Contents** :
 - First Year :
   - First Semester :
     - ASC - MIPS - Lab Homework and Lab Test
